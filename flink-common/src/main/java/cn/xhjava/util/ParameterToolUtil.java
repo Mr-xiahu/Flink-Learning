@@ -18,9 +18,10 @@ public class ParameterToolUtil {
 
         try {
             return ParameterTool
-                    .fromPropertiesFile(ParameterToolUtil.class.getClassLoader().getResourceAsStream(PropertiesConstants.PROPERTIES_FILE_NAME))
-                    .mergeWith(ParameterTool.fromArgs(args))
-                    .mergeWith(ParameterTool.fromSystemProperties());
+                    //.fromPropertiesFile(ParameterToolUtil.class.getClassLoader().getResourceAsStream(PropertiesConstants.PROPERTIES_FILE_NAME))
+                    .fromPropertiesFile(ParameterToolUtil.class.getClassLoader().getResourceAsStream(PropertiesConstants.PROPERTIES_KAFKA_FILE_NAME))
+                    .mergeWith(ParameterTool.fromArgs(args));
+                    //.mergeWith(ParameterTool.fromSystemProperties());
 
         } catch (Exception e) {
             log.error("获取ParameterTool全局参数异常");

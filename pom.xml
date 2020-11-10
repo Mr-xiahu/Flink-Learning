@@ -12,6 +12,7 @@
         <module>flink-common</module>
         <module>flink-base</module>
         <module>flink-demo</module>
+        <module>flink-connect</module>
     </modules>
 
 
@@ -19,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flink.version>1.10.0</flink.version>
         <java.version>1.8</java.version>
+        <hadoop.version>3.0.0</hadoop.version>
         <scala.binary.version>2.11</scala.binary.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>

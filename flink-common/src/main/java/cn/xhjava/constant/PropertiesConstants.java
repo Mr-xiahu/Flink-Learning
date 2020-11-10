@@ -6,4 +6,5 @@ package cn.xhjava.constant;
  */
 public class PropertiesConstants {
     public static final String PROPERTIES_FILE_NAME = "application.properties";
+    public static final String PROPERTIES_KAFKA_FILE_NAME = "kafka.properties";
 }
