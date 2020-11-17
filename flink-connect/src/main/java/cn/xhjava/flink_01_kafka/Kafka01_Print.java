@@ -26,8 +26,6 @@ public class Kafka01_Print {
         env.setParallelism(1);
         SingleOutputStreamOperator<String> source = env.addSource(sourceKafka);
 
-        //打印执行计划
-
 
         source.filter(new FilterFunction<String>() {
             @Override
@@ -42,7 +40,9 @@ public class Kafka01_Print {
             }
         });
 
+        //打印执行计划
         System.out.println(env.getExecutionPlan());
+
         env.execute();
 
     }
