@@ -21,7 +21,7 @@ public class Kafka01_Print {
         LocalStreamEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
         ParameterTool parameterTool = ParameterToolUtil.createParameterTool(args);
         KafkaConsumer kafkaConsumer = new KafkaConsumer(parameterTool);
-        MyFlinkKafkaConsumer<String> sourceKafka = kafkaConsumer.buildFlinkKafkaConsumer(parameterTool);
+        MyFlinkKafkaConsumer<String> sourceKafka = kafkaConsumer.buildFlinkKafkaConsumer();
         sourceKafka.setStartFromEarliest();
         env.setParallelism(1);
         SingleOutputStreamOperator<String> source = env.addSource(sourceKafka);

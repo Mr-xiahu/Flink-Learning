@@ -1,8 +1,6 @@
 package cn.xhjava.datasource;
 
-import cn.xhjava.domain.MetricEvent;
-import cn.xhjava.domain.Student;
-import cn.xhjava.domain.Word;
+import cn.xhjava.domain.*;
 import org.apache.flink.api.java.tuple.Tuple4;
 
 import java.util.ArrayList;
@@ -35,13 +33,13 @@ public class DataSource {
 
 
     public static final MetricEvent[] MetricEvent = new MetricEvent[]{
-            new MetricEvent(1,"tom","web","1"),
-            new MetricEvent(2,"jack","phone","2"),
-            new MetricEvent(3,"linda","app","3"),
-            new MetricEvent(4,"寂寞的男人","app","3"),
-            new MetricEvent(5,"张三","web","1"),
-            new MetricEvent(6,"李四","web","1"),
-            new MetricEvent(7,"王五","phone","2")
+            new MetricEvent(1, "tom", "web", "1"),
+            new MetricEvent(2, "jack", "phone", "2"),
+            new MetricEvent(3, "linda", "app", "3"),
+            new MetricEvent(4, "寂寞的男人", "app", "3"),
+            new MetricEvent(5, "张三", "web", "1"),
+            new MetricEvent(6, "李四", "web", "1"),
+            new MetricEvent(7, "王五", "phone", "2")
     };
 
     public static final Student[] Studens2 = new Student[]{
@@ -70,4 +68,23 @@ public class DataSource {
 
         return result;
     }
+
+    public static final OrderEvent[] orderEvent = new OrderEvent[]{
+            new OrderEvent("1", "AA", 1000l),
+            new OrderEvent("2", "BB", 2000l),
+            new OrderEvent("3", "CC", 3000l),
+            new OrderEvent("4", "DD", 4000l),
+            new OrderEvent("5", "EE", 5000l),
+            new OrderEvent("6", "FF", 6000l),
+            new OrderEvent("8", "HH", 7000l)
+    };
+
+    public static final PayEvent[] payEvent = new PayEvent[]{
+            new PayEvent("1", "1", "AAA", 1000l),
+            new PayEvent("2", "2", "BBB", 2000l),
+            new PayEvent("3", "3", "CCC", 3000l),
+            new PayEvent("4", "4", "DDD", 4000l),
+            new PayEvent("5", "5", "EEE", 5000l),
+            new PayEvent("6", "7", "GGG", 7000l)
+    };
 }

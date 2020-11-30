@@ -1,5 +1,8 @@
 package cn.xhjava.flink_01_kafka.hander;
 
+import cn.xhjava.domain.AlertEvent;
+import cn.xhjava.schema.AlertEventSchema;
+import cn.xhjava.schema.OggMsgSchema;
 import org.apache.flink.annotation.PublicEvolving;
 import org.apache.flink.api.common.io.ratelimiting.FlinkConnectorRateLimiter;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
@@ -8,6 +11,7 @@ import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks;
 import org.apache.flink.streaming.api.functions.AssignerWithPunctuatedWatermarks;
 import org.apache.flink.streaming.api.operators.StreamingRuntimeContext;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
 import org.apache.flink.streaming.connectors.kafka.KafkaDeserializationSchema;
 import org.apache.flink.streaming.connectors.kafka.config.OffsetCommitMode;
 import org.apache.flink.streaming.connectors.kafka.internals.AbstractFetcher;
@@ -39,13 +43,10 @@ public class MyFlinkKafkaConsumer<T> extends FlinkKafkaConsumer010<T> implements
         this.taskCallBack = callBack;
     }
 
+
     public MyFlinkKafkaConsumer(String topic, DeserializationSchema<T> deserializer, Properties props, TaskCallBack callBack) {
         this(Collections.singletonList(topic), deserializer, props);
         this.taskCallBack = callBack;
-    }
-
-    public MyFlinkKafkaConsumer(String topic, KafkaDeserializationSchema<T> deserializer, Properties props) {
-        this(Collections.singletonList(topic), deserializer, props);
     }
 
     public MyFlinkKafkaConsumer(List<String> topics, DeserializationSchema<T> deserializer, Properties props) {
