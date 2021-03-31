@@ -19,15 +19,16 @@ public class WordCountStreaming {
         //2.加载配置
         env.getConfig().setGlobalJobParameters(ParameterTool.fromArgs(args));
         //3.添加数据源
-        env.fromElements(DataSource.WORDS).flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
-            @Override
-            public void flatMap(String line, Collector<Tuple2<String, Integer>> collector) throws Exception {
-                String[] field = line.split("\\W+");
-                for (String word : field) {
-                    collector.collect(new Tuple2<String, Integer>(word, 1));
-                }
-            }
-        }).keyBy(0).reduce(new ReduceFunction<Tuple2<String, Integer>>() {
+        env.fromElements(DataSource.WORDS)
+                .flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
+                    @Override
+                    public void flatMap(String line, Collector<Tuple2<String, Integer>> collector) throws Exception {
+                        String[] field = line.split("\\W+");
+                        for (String word : field) {
+                            collector.collect(new Tuple2<String, Integer>(word, 1));
+                        }
+                    }
+                }).keyBy(0).reduce(new ReduceFunction<Tuple2<String, Integer>>() {
             @Override
             public Tuple2<String, Integer> reduce(Tuple2<String, Integer> t1, Tuple2<String, Integer> t2) throws Exception {
                 return new Tuple2<>(t1.f0, t1.f1 + t2.f1);

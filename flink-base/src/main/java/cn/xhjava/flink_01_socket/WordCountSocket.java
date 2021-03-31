@@ -26,17 +26,17 @@ public class WordCountSocket {
         //1.初始化flink环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         //2.设置全局配置参数
-        ParameterTool parameterTool = ParameterToolUtil.createParameterTool(args);
+        /*ParameterTool parameterTool = ParameterToolUtil.createParameterTool(args);
         env.getConfig().setGlobalJobParameters(parameterTool);
 
         Map<String, String> param = env.getConfig().getGlobalJobParameters().toMap();
 
         String host = param.get("socket.host");
         Integer port = Integer.valueOf(param.get("socket.port"));
-        String appName = param.get("socket.name");
+        String appName = param.get("socket.name");*/
 
         //3.添加数据源
-        DataStreamSource<String> dataStream = env.socketTextStream(host, port);
+        DataStreamSource<String> dataStream = env.socketTextStream("192.168.0.113", 8889);
         dataStream.flatMap(new FlatMapFunction<String, Tuple2<String, Long>>() {
             @Override
             public void flatMap(String value, Collector<Tuple2<String, Long>> out) throws Exception {
@@ -53,6 +53,6 @@ public class WordCountSocket {
         }).printToErr();
 
 
-        env.execute(appName);
+        env.execute();
     }
 }

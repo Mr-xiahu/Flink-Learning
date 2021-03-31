@@ -41,6 +41,6 @@ public class WordCountSQL {
         DataSet<Word> ds3 = btEnv.toDataSet(table02, Word.class);
         ds3.printToErr();
 
-        //env.execute("Word Count By SQL");
+        env.execute("Word Count By SQL");
     }
 }
