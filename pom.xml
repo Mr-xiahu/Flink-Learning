@@ -13,6 +13,7 @@
         <module>flink-base</module>
         <module>flink-demo</module>
         <module>flink-connect</module>
+        <module>flink-table</module>
     </modules>
 
 
@@ -68,6 +69,12 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-statebackend-rocksdb_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-connector-hbase-base -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-hbase-base_2.11</artifactId>
+            <version>1.12.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-avro -->
         <dependency>

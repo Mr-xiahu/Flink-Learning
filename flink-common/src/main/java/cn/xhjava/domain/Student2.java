@@ -4,24 +4,22 @@ package cn.xhjava.domain;
  * @author Xiahu
  * @create 2020/10/27
  */
-public class Student {
+public class Student2 {
     private Integer id;
     private String name;
     private String sex;
 
-    private Integer sorce;
 
 
-    public Student() {
+    public Student2() {
     }
 
 
 
-    public Student(Integer id, String name, String sex, Integer sorce) {
+    public Student2(Integer id, String name, String sex) {
         this.id = id;
         this.name = name;
         this.sex = sex;
-        this.sorce = sorce;
     }
 
     public Integer getId() {
@@ -48,21 +46,5 @@ public class Student {
         this.sex = sex;
     }
 
-    public Integer getSorce() {
-        return sorce;
-    }
 
-    public void setSorce(Integer sorce) {
-        this.sorce = sorce;
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", sex='" + sex + '\'' +
-                ", sorce=" + sorce +
-                '}';
-    }
 }
