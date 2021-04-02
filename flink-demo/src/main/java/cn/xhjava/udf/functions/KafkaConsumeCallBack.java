@@ -1,6 +1,6 @@
 package cn.xhjava.udf.functions;
 
-import cn.xhjava.flink_01_kafka.hander.TaskCallBack;
+import cn.xhjava.flink.connector.hander.TaskCallBack;
 import org.apache.flink.streaming.connectors.kafka.internals.KafkaTopicPartition;
 
 import java.util.Map;

@@ -1,4 +1,4 @@
-package cn.xhjava.flink_01_kafka.redis;
+package cn.xhjava.flink.connector.redis;
 
 import cn.xhjava.domain.SensorReading;
 import org.apache.flink.streaming.api.datastream.DataStream;

@@ -1,4 +1,4 @@
-package cn.xhjava.flink_01_kafka.hander;
+package cn.xhjava.flink.connector.hander;
 
 import org.apache.flink.api.common.io.ratelimiting.FlinkConnectorRateLimiter;
 import org.apache.flink.metrics.MetricGroup;

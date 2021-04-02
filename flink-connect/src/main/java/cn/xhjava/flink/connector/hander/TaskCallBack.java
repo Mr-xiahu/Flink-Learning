@@ -1,4 +1,4 @@
-package cn.xhjava.flink_01_kafka.hander;
+package cn.xhjava.flink.connector.hander;
 
 import org.apache.flink.streaming.connectors.kafka.internals.KafkaTopicPartition;
 

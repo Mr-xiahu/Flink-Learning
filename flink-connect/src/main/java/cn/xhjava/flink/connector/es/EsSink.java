@@ -1,4 +1,4 @@
-package cn.xhjava.flink_01_kafka.es;
+package cn.xhjava.flink.connector.es;
 
 import cn.xhjava.domain.SensorReading;
 import org.apache.flink.api.common.functions.RuntimeContext;

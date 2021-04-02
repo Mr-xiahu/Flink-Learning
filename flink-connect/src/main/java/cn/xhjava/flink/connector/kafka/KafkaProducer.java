@@ -1,4 +1,4 @@
-package cn.xhjava.flink_01_kafka.kafka;
+package cn.xhjava.flink.connector.kafka;
 
 import cn.xhjava.constant.FlinkLearnConstant;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;

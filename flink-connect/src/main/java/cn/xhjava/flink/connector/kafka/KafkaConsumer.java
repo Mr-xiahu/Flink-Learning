@@ -1,23 +1,15 @@
-package cn.xhjava.flink_01_kafka.kafka;
+package cn.xhjava.flink.connector.kafka;
 
 import cn.xhjava.constant.FlinkLearnConstant;
-import cn.xhjava.domain.AlertEvent;
 import cn.xhjava.domain.OggMsg;
-import cn.xhjava.flink_01_kafka.hander.MyFlinkKafkaConsumer;
-import cn.xhjava.flink_01_kafka.hander.TaskCallBack;
+import cn.xhjava.flink.connector.hander.MyFlinkKafkaConsumer;
+import cn.xhjava.flink.connector.hander.TaskCallBack;
 import cn.xhjava.kafka.KafkaUtil;
-import cn.xhjava.schema.AlertEventSchema;
 import cn.xhjava.schema.OggMsgSchema;
-import cn.xhjava.util.ParameterToolUtil;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.java.utils.ParameterTool;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
-import cn.xhjava.constant.FlinkLearnConstant.*;
-import org.apache.flink.streaming.util.serialization.DeserializationSchema;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**

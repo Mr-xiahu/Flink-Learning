@@ -11,7 +11,7 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.java.StreamTableEnvironment;
+//import org.apache.flink.table.api.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 import org.apache.hadoop.conf.Configuration;
 
@@ -20,7 +20,7 @@ import org.apache.hadoop.conf.Configuration;
  * @create 2021/4/1
  */
 public class Demo1 {
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         DataStreamSource<String> dataStreamSource = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\student");
@@ -51,12 +51,12 @@ public class Demo1 {
         //sensorTable
 
         tableEnv.createTemporaryView("sensor", sensorTable);
-        /* Table table = sensorTable.select("id, name ");*/
+        *//* Table table = sensorTable.select("id, name ");*//*
         Table table = tableEnv.sqlQuery("select id,name,hbase(id) from sensor ");
 
         tableEnv.toAppendStream(table, Row.class).print();
         env.execute();
 
-    }
+    }*/
 
 }

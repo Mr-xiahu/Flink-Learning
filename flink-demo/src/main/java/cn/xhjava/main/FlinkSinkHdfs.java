@@ -2,8 +2,8 @@ package cn.xhjava.main;
 
 import cn.xhjava.domain.OggMsg;
 import cn.xhjava.util.FlinkEnvConfig;
-import cn.xhjava.flink_01_kafka.hander.MyFlinkKafkaConsumer;
-import cn.xhjava.flink_01_kafka.kafka.KafkaConsumer;
+import cn.xhjava.flink.connector.hander.MyFlinkKafkaConsumer;
+import cn.xhjava.flink.connector.kafka.KafkaConsumer;
 import cn.xhjava.udf.functions.KafkaConsumeCallBack;
 import cn.xhjava.udf.functions.process.OggMsgProcessAllWindowFuncation;
 import cn.xhjava.util.ParameterToolUtil;
@@ -18,7 +18,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 
 /**
  * @author Xiahu
- * @create 2020/11/26s
+ * @create 2020/11/26
  * flink 消费 kafka , 落地到 hdfs
  */
 @Slf4j

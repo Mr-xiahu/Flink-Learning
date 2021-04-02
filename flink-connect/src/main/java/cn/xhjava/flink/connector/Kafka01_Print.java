@@ -1,7 +1,7 @@
-package cn.xhjava.flink_01_kafka;
+package cn.xhjava.flink.connector;
 
-import cn.xhjava.flink_01_kafka.hander.MyFlinkKafkaConsumer;
-import cn.xhjava.flink_01_kafka.kafka.KafkaConsumer;
+import cn.xhjava.flink.connector.hander.MyFlinkKafkaConsumer;
+import cn.xhjava.flink.connector.kafka.KafkaConsumer;
 import cn.xhjava.util.ParameterToolUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

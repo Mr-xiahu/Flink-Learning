@@ -19,7 +19,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.10.0</flink.version>
+        <flink.version>1.12.2</flink.version>
         <java.version>1.8</java.version>
         <hadoop.version>3.0.0</hadoop.version>
         <scala.binary.version>2.11</scala.binary.version>
@@ -34,6 +34,12 @@
             <version>${flink.version}</version>
             <!--<scope>provided</scope>-->
         </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-clients_2.11</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
@@ -63,7 +69,7 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka-0.11_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
+            <version>1.10.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -74,7 +80,7 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-hbase-base_2.11</artifactId>
-            <version>1.12.2</version>
+            <version>${flink.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-avro -->
         <dependency>
@@ -82,6 +88,14 @@
             <artifactId>flink-avro</artifactId>
             <version>${flink.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-sql-connector-hbase-1.4 -->
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-sql-connector-hbase-2.2 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-sql-connector-hbase-2.2_2.11</artifactId>
+            <version>1.12.2</version>
+        </dependency>
+
 
         <!--<dependency>
             <groupId>org.slf4j</groupId>
