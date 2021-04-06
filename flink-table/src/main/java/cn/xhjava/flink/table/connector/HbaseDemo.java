@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @create 2021/4/2
  */
 public class HbaseDemo {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
@@ -30,15 +30,15 @@ public class HbaseDemo {
                 "'zookeeper.znode.parent' = '/hbase'\n" +
                 ")");
 
-        Table table = tableEnv.sqlQuery("select * from hbase_user_behavior");
+        Table table = tableEnv.sqlQuery("select rowkey from hbase_user_behavior");
         // 查询的结果
-        TableResult executeResult = table.execute();
+        tableEnv.toAppendStream(table, Row.class).print();
 
+        //插入数据
+        tableEnv.executeSql("INSERT INTO hbase_user_behavior\n" +
+                "SELECT '2000000000', ROW('1', '1', '1') as info");
 
-        // 输出 (执行print或者下面的 Consumer之后，数据就被消费了。两个只能留下一个)
-        executeResult.print();
-
-
+        //env.execute();
 
     }
 }
