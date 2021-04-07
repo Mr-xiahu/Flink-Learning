@@ -1,4 +1,4 @@
-package cn.xhjava.flink_08_state;
+package cn.xhjava.flink_08_state.funcation;
 
 import org.apache.flink.runtime.state.FunctionInitializationContext;
 import org.apache.flink.runtime.state.FunctionSnapshotContext;
@@ -13,22 +13,16 @@ import java.util.List;
  *
  * ListCheckpointed
  */
-public class State04_ListCheckPointFuncation implements ListCheckpointed {
+public class ListCheckPointFuncation implements ListCheckpointed {
 
 
-    /**
-     * 获取函数的当前状态。状态必须返回此函数先前所有的调用结果。
-     */
+    //执行checkpoint时调用此方法,将state序列化到磁盘(保存到hdfs)
     @Override
     public List snapshotState(long l, long l1) throws Exception {
         return null;
     }
 
-    /**
-     * 将函数或算子的状态恢复到先前 checkpoint 的状态.
-     * 此方法在故障恢复后执行函数时调用.
-     * 如果函数的特定并行实例无法恢复到任何状态，则状态列表可能为空.
-     */
+    //当程序发生异常时,从list内恢复状态
     @Override
     public void restoreState(List list) throws Exception {
 

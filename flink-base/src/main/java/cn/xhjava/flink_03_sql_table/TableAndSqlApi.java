@@ -8,14 +8,12 @@ import org.apache.flink.api.common.typeinfo.TypeHint;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.utils.ParameterTool;
-import org.apache.flink.streaming.api.collector.selector.OutputSelector;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.datastream.SplitStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.java.StreamTableEnvironment;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,7 @@ public class TableAndSqlApi {
         //构造流式SQL查询
         StreamTableEnvironment stEnv = StreamTableEnvironment.create(sEnv, bsSettings);
 
-        SingleOutputStreamOperator<Item> sourceStream = sEnv
+        DataStream<Item> sourceStream = sEnv
                 .addSource(new MyStreamSource())
                 .map(new MapFunction<Item, Item>() {
                     @Override
@@ -47,8 +45,8 @@ public class TableAndSqlApi {
                     }
                 });
 
-        //分流
-        DataStream<Item> eventDataStream = sourceStream.split(new OutputSelector<Item>() {
+        //分流,split 在Flink1.12.2不允许被使用,需要分流,使用：SideoutPut
+        /*DataStream<Item> eventDataStream = sourceStream.split(new OutputSelector<Item>() {
             @Override
             public Iterable<String> select(Item value) {
                 List<String> output = new ArrayList<>();
@@ -73,12 +71,12 @@ public class TableAndSqlApi {
                 }
                 return output;
             }
-        }).select("odd");
+        }).select("odd");*/
 
 
         //创建表的临时视图
-        stEnv.createTemporaryView("evenTable", eventDataStream);
-        stEnv.createTemporaryView("oddTable", oddDataStream);
+        /*stEnv.createTemporaryView("evenTable", eventDataStream);
+        stEnv.createTemporaryView("oddTable", oddDataStream);*/
 
         Table queryTable = stEnv.sqlQuery("select a.id,a.name,b.id,b.name from evenTable as a join oddTable as b on a.name = b.name");
         queryTable.printSchema();

@@ -1,5 +1,7 @@
 package cn.xhjava.flink_09_statebackend;
 
+import org.apache.flink.api.common.restartstrategy.RestartStrategies;
+import org.apache.flink.api.common.time.Time;
 import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.flink.contrib.streaming.state.RocksDBStateBackend;
 import org.apache.flink.runtime.state.StateBackend;
@@ -27,36 +29,42 @@ public class StateBackend01_Demo {
         //RocksDBStateBackend:基于rocksdb的文件存储(生产环境使用)
 
         LocalStreamEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
-        env.enableCheckpointing(60000);//60秒做一次checkpoint
 
-        //设置checkpoint的方式
+        //1.状态后端配置
         StateBackend stateBackend = new MemoryStateBackend();
         StateBackend fsStateBackend = new FsStateBackend("/user/flink/checkpoint");
         StateBackend rocksDBStateBackend = new RocksDBStateBackend("/user/flink/checkpoint", true);
+        env.setStateBackend(stateBackend);
 
-        /*env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
+        // 2. 检查点配置
+        env.enableCheckpointing(300);
+
+
+        // 3. 重启策略配置
+        // 固定延迟重启
+        env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3, 10000L));
+        // 失败率重启
+        env.setRestartStrategy(RestartStrategies.failureRateRestart(3, Time.minutes(10), Time.minutes(1)));
+
+
+
+        //高级配置
+        env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
         // CheckPoint 的超时时间
         env.getCheckpointConfig().setCheckpointTimeout(60000);
-
         // 同一时间，只允许 有 1 个 Checkpoint 在发生
         env.getCheckpointConfig().setMaxConcurrentCheckpoints(1);
-
         // 两次 Checkpoint 之间的最小时间间隔为 500 毫秒
         env.getCheckpointConfig().setMinPauseBetweenCheckpoints(500);
-
         // 当 Flink 任务取消时，保留外部保存的 CheckPoint 信息
         env.getCheckpointConfig().enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
-
         // 当有较新的 Savepoint 时，作业也会从 Checkpoint 处恢复
         env.getCheckpointConfig().setPreferCheckpointForRecovery(true);
-
         // 作业最多允许 Checkpoint 失败 1 次（flink 1.9 开始支持）
         env.getCheckpointConfig().setTolerableCheckpointFailureNumber(1);
-
         // Checkpoint 失败后，整个 Flink 任务也会失败（flink 1.9 之前）
-        env.getCheckpointConfig().setFailOnCheckpointingErrors(true);*/
+        env.getCheckpointConfig().setFailOnCheckpointingErrors(true);
 
-        env.setStateBackend(stateBackend);
     }
 
     public void method() {

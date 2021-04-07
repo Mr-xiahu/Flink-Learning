@@ -1,4 +1,4 @@
-package cn.xhjava.flink_08_state;
+package cn.xhjava.flink_08_state.funcation;
 
 import org.apache.flink.runtime.state.FunctionInitializationContext;
 import org.apache.flink.runtime.state.FunctionSnapshotContext;
@@ -10,15 +10,15 @@ import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
  *
  * 实现CheckpointedFunction接口
  */
-public class State03_CheckpointFunction implements CheckpointedFunction {
+public class CheckpointFunction implements CheckpointedFunction {
 
-    //执行checkpoint时调用此方法
+    //执行checkpoint时调用此方法,将state序列化到磁盘(保存到hdfs)
     @Override
     public void snapshotState(FunctionSnapshotContext context) throws Exception {
 
     }
 
-    //flink程序初始化时被调用,或者是从State恢复
+    //flink程序初始化时被调用,或者是从State恢复(从hdfs读取state,并将state进行恢复)
     @Override
     public void initializeState(FunctionInitializationContext context) throws Exception {
         /**

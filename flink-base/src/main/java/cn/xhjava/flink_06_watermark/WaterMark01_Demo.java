@@ -36,6 +36,9 @@ public class WaterMark01_Demo {
         //设置为eventtime事件类型
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
+        //设置warermark 生成间隔时间
+        env.getConfig().setAutoWatermarkInterval(1000l);
+
         String host = param.get("socket.host");
         Integer port = Integer.valueOf(param.get("socket.port"));
         String appName = param.get("socket.name");

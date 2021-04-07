@@ -25,7 +25,7 @@ public class State07_QueryState {
 
         // Reducing state
         ReducingStateDescriptor<Tuple2<Integer, Long>> reducingState = new ReducingStateDescriptor(
-                "zhisheng",
+                "xiahu",
                 new MySumReduce(),
                 MySumReduce.class);
 
