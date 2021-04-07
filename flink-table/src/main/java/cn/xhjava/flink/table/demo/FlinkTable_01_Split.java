@@ -1,20 +1,19 @@
-package cn.xhjava.flink.table.udf;
+package cn.xhjava.flink.table.demo;
 
 import cn.xhjava.domain.SensorReading;
-import org.apache.flink.api.java.tuple.Tuple2;
+import cn.xhjava.flink.table.udf.tablefuncation.Split;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.table.functions.TableFunction;
 import org.apache.flink.types.Row;
 
 /**
  * @author Xiahu
  * @create 2021/4/6
  */
-public class Demo {
+public class FlinkTable_01_Split {
     public static void main(String[] args) throws Exception{
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
@@ -53,22 +52,5 @@ public class Demo {
         tableEnv.toAppendStream(resultSqlTable, Row.class).print("sql");
 
         env.execute();
-    }
-
-    // 实现自定义TableFunction
-    public static class Split extends TableFunction<Tuple2<String, Integer>> {
-        // 定义属性，分隔符
-        private String separator = ",";
-
-        public Split(String separator) {
-            this.separator = separator;
-        }
-
-        // 必须实现一个eval方法，没有返回值
-        public void eval( String str ){
-            for( String s: str.split(separator) ){
-                collect(new Tuple2<>(s, s.length()));
-            }
-        }
     }
 }
