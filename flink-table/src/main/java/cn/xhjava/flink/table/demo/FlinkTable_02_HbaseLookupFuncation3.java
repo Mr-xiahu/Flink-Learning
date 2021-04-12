@@ -1,31 +1,33 @@
 package cn.xhjava.flink.table.demo;
 
-import cn.xhjava.domain.Student2;
 import cn.xhjava.domain.Student3;
 import cn.xhjava.flink.table.udf.tablefuncation.MyHbaseLookupFuncation;
-import cn.xhjava.flink.table.udf.tablefuncation.MyHbaseLookupFuncation2;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.typeinfo.Types;
 import org.apache.flink.connector.hbase.source.HBaseLookupFunction;
-import org.apache.flink.connector.hbase.source.HBaseRowDataLookupFunction;
 import org.apache.flink.connector.hbase.util.HBaseTableSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.table.types.DataType;
 import org.apache.flink.types.Row;
 import org.apache.hadoop.conf.Configuration;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Xiahu
  * @create 2021/4/6
  * <p>
- * 使用源码内的HbaseLookupFuncation注册函数,并完成
- * 流数据实时 look up hbase 单表数据查询
+ * 流数据实时 look up hbase 单表数据查询,数据类型 Row
  */
-public class FlinkTable_04_HbaseLookupFuncation {
+public class FlinkTable_02_HbaseLookupFuncation3 {
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) throws Exception {
@@ -49,17 +51,17 @@ public class FlinkTable_04_HbaseLookupFuncation {
         configuration.set("hbase.zookeeper.quorum", "192.168.0.115");
         HBaseTableSchema baseTableSchema = new HBaseTableSchema();
         baseTableSchema.setRowKey("rowkey", String.class);
-        MyHbaseLookupFuncation2 baseLookupFunction = new MyHbaseLookupFuncation2(
-                configuration,
-                "test:hbase_user_behavior",
-                baseTableSchema,
-                ",");
+        baseTableSchema.addColumn("info","small",String.class);
+        baseTableSchema.addColumn("info","yellow",String.class);
+        baseTableSchema.addColumn("info","man",String.class);
+        HBaseLookupFunction baseLookupFunction = new HBaseLookupFunction(configuration, "test:hbase_user_behavior", baseTableSchema);
 
         //注册函数
         tableEnv.registerFunction("hbaseLookup", baseLookupFunction);
         System.out.println("函数注册成功~~~");
 
-        Table table = tableEnv.sqlQuery("select id,name,sex,info from student,LATERAL TABLE(hbaseLookup(id)) as T(info)");
+        Table table = tableEnv.sqlQuery("select id,name,sex,info.small,info.yellow,info.man from student,LATERAL TABLE(hbaseLookup(id)) as T(rowkey,info)");
+        //Table table = tableEnv.sqlQuery("select id,name,sex,T from student,LATERAL TABLE(hbaseLookup(id)) as T");
 
         tableEnv.toAppendStream(table, Row.class).print();
         env.execute();

@@ -1,20 +1,18 @@
 package cn.xhjava.domain;
 
+
 /**
  * @author Xiahu
  * @create 2020/10/27
  */
+
 public class Student3 {
     private String id;
     private String name;
     private String sex;
 
-
-
     public Student3() {
     }
-
-
 
     public Student3(String id, String name, String sex) {
         this.id = id;
@@ -45,6 +43,4 @@ public class Student3 {
     public void setSex(String sex) {
         this.sex = sex;
     }
-
-
 }

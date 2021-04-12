@@ -35,7 +35,7 @@ public class KafkaConsumer {
         prop.put(BROKER, parameter.get(FlinkLearnConstant.FLINK_KAFKA_BROKERS));
         prop.put(GROUP_ID, parameter.get(FlinkLearnConstant.FLINK_KAFKA_GROUP_ID));
         MyFlinkKafkaConsumer<String> consumer = new MyFlinkKafkaConsumer<String>(topics, new SimpleStringSchema(), prop);
-        consumer.setCommitOffsetsOnCheckpoints(true);
+//        consumer.setCommitOffsetsOnCheckpoints(true);
         return consumer;
     }
 
@@ -47,7 +47,7 @@ public class KafkaConsumer {
         prop.put("key.deserializer", "org.apache.kafka.common.serialization.StringSerializer");
         prop.put("value.deserializer", "org.apache.kafka.common.serialization.StringSerializer");
         MyFlinkKafkaConsumer<String> consumer  = new MyFlinkKafkaConsumer<String>(topics, new SimpleStringSchema(), prop, taskCallBack);
-        consumer.setCommitOffsetsOnCheckpoints(true);
+//        consumer.setCommitOffsetsOnCheckpoints(true);
         return consumer;
     }
 
@@ -58,7 +58,7 @@ public class KafkaConsumer {
         prop.put("key.deserializer", "org.apache.kafka.common.serialization.StringSerializer");
         prop.put("value.deserializer", "org.apache.kafka.common.serialization.StringSerializer");
         MyFlinkKafkaConsumer<OggMsg> consumer = new MyFlinkKafkaConsumer<OggMsg>(topics, new OggMsgSchema(), prop, taskCallBack);
-        consumer.setCommitOffsetsOnCheckpoints(true);
+//        consumer.setCommitOffsetsOnCheckpoints(true);
         return consumer;
     }
 }

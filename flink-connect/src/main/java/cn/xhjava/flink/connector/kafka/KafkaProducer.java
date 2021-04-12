@@ -16,7 +16,7 @@ public class KafkaProducer {
                 parameterTool.get(FlinkLearnConstant.FLINK_KAFKA_produce_BROKER),
                 parameterTool.get(FlinkLearnConstant.FLINK_KAFKA_produce_TOPIC),
                 new SimpleStringSchema());
-        producer.setWriteTimestampToKafka(true);
+//        producer.setWriteTimestampToKafka(true);
         return producer;
     }
 }
