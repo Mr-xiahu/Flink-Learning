@@ -8,8 +8,6 @@ import cn.xhjava.source.MySqlSource;
 import cn.xhjava.util.ParameterToolUtil;
 import org.apache.flink.api.common.state.BroadcastState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
-import org.apache.flink.api.common.state.StateTtlConfig;
-import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeHint;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -18,7 +16,7 @@ import org.apache.flink.streaming.api.datastream.BroadcastStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.BroadcastProcessFunction;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer011;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
 
 /**
@@ -34,7 +32,7 @@ public class State06_BroadcastState {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         //从kafka中获取要处理的数据源,流中的对象具有告警或者恢复的事件
-        DataStreamSource<AlertEvent> alertData = env.addSource(new FlinkKafkaConsumer011<>("alert",
+        DataStreamSource<AlertEvent> alertData = env.addSource(new FlinkKafkaConsumer<>("alert",
                 new AlertEventSchema(),
                 KafkaUtil.getKafkaProp(ParameterToolUtil.createParameterTool(args)))).setParallelism(1);
 

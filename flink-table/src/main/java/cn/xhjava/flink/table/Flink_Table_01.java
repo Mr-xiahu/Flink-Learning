@@ -6,6 +6,7 @@ import org.apache.flink.table.api.TableEnvironment;
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 
 /**
  * @author Xiahu
@@ -22,7 +23,7 @@ public class Flink_Table_01 {
 
         // FLINK BATCH QUERY
         ExecutionEnvironment fbEnv = ExecutionEnvironment.getExecutionEnvironment();
-        //BatchTableEnvironment fbTableEnv = BatchTableEnvironment.create(fbEnv);
+        BatchTableEnvironment fbTableEnv = BatchTableEnvironment.create(fbEnv);
 
         // BLINK STREAMING QUERY
         StreamExecutionEnvironment bsEnv = StreamExecutionEnvironment.getExecutionEnvironment();

@@ -3,7 +3,6 @@ package cn.xhjava.flink_02_api;
 import cn.xhjava.datasource.DataSource;
 import cn.xhjava.domain.Student;
 import org.apache.flink.api.java.tuple.Tuple4;
-import org.apache.flink.streaming.api.collector.selector.OutputSelector;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.assigners.TumblingEventTimeWindows;
@@ -26,7 +25,7 @@ public class Operator11_Split {
         DataStreamSource<Student> studentDataStreamSource2 = env.fromElements(DataSource.Studens2);
         DataStreamSource<Tuple4<Integer, String, String, Integer>> tuple4DataStreamSource = env.fromElements(DataSource.Tuple4_Student);
 
-        studentDataStreamSource.split(new OutputSelector<Student>() {
+        /*studentDataStreamSource.split(new OutputSelector<Student>() {
             @Override
             public Iterable<String> select(Student value) {
                 List<String> result = new ArrayList<>();
@@ -37,7 +36,7 @@ public class Operator11_Split {
                 }
                 return result;
             }
-        }).printToErr();
+        }).printToErr();*/
 
 
         //3.执行

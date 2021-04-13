@@ -29,6 +29,7 @@ public class OggMsgProcessWindowFuncation extends ProcessWindowFunction<OggMsg, 
             out.collect(oggMsg);
             currentBatchCount++;
         }
-        log.info("当前处理总数据量处理数据 {} 条", currentBatchCount);
+
+        //log.info("当前处理总数据量处理数据 {} 条", currentBatchCount);
     }
 }
