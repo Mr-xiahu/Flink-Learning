@@ -37,7 +37,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>cn.xhjava.flink.table.demo.Test6</mainClass>
+                            <mainClass>cn.xhjava.flink.table.demo.FlinkTable_05_KafkaLookupHbase01</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -55,6 +55,14 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>*</exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
 </project>

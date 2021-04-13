@@ -23,8 +23,9 @@ import java.util.Properties;
  * @create 2021/4/9
  * kafka 实时数据 lookup hbase维度数据性能测试
  * Hbase 表个数: 5
+ * 速度: 100/s
  */
-public class Test6 {
+public class FlinkTable_05_KafkaLookupHbase01 {
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     /**
@@ -72,7 +73,7 @@ public class Test6 {
         HBaseTableSchema schema4 = HbaseFamilyParse.parseHBaseTableSchema("name,realtime_dim_4_id,sex", "info");
         HBaseLookupFunction baseLookupFunction4 = new HBaseLookupFunction(configuration, "lookup:realtime_dim_4", schema4);
 
-        // 4.
+        // 5.
         HBaseTableSchema schema5 = HbaseFamilyParse.parseHBaseTableSchema("name,realtime_dim_6_id,sex", "info");
         HBaseLookupFunction baseLookupFunction5 = new HBaseLookupFunction(configuration, "lookup:realtime_dim_5", schema5);
         long start = System.currentTimeMillis();
@@ -91,7 +92,7 @@ public class Test6 {
                 "LATERAL TABLE(realtime_dim_4(info3.realtime_dim_4_id)) as T4(rowkey4,info4)," +
                 "LATERAL TABLE(realtime_dim_5(info4.realtime_dim_4_id)) as T5(rowkey5,info5)");*/
 
-//        tableEnv.toAppendStream(table, Row.class).printToErr();
+        //tableEnv.toAppendStream(table, Row.class).printToErr();
 
         tableEnv.executeSql("CREATE TABLE realtime_result2( \n" +
                 "rowkey STRING, \n" +
