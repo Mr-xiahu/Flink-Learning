@@ -13,7 +13,7 @@ import org.apache.flink.types.Row;
  * @author Xiahu
  * @create 2021/4/1
  * <p>
- * 创建表
+ * 使用新API,Flink-sql类型,创建表并打印数据
  */
 public class Flink_Table_02 {
     public static void main(String[] args) throws Exception {
@@ -23,7 +23,7 @@ public class Flink_Table_02 {
 
 
         //2.从文本读取真实数据
-        DataStreamSource<String> source = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\student");
+        DataStreamSource<String> source = env.readTextFile("F:\\git\\Flink-Learning\\flink-table\\src\\main\\resources\\student");
         DataStream<Student2> dataStream = source.map(new MapFunction<String, Student2>() {
             @Override
             public Student2 map(String s) throws Exception {
@@ -34,8 +34,7 @@ public class Flink_Table_02 {
 
 
         //3.转化为table
-        Table student = tableEnv.fromValues(dataStream);
-        //Table student = tableEnv.fromDataStream(dataStream, "id,name,sex");
+        Table student = tableEnv.fromDataStream(dataStream, "id,name,sex");
         tableEnv.createTemporaryView("student", student);
         tableEnv.sqlQuery("select id,name,sex from student");
         tableEnv.toAppendStream(student, Row.class).print();

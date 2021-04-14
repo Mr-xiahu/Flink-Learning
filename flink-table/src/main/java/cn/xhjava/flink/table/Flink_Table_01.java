@@ -7,6 +7,7 @@ import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 
 /**
  * @author Xiahu
@@ -16,23 +17,36 @@ import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
  */
 public class Flink_Table_01 {
     public static void main(String[] args) {
-        //FLINK STREAMING QUERY
-        EnvironmentSettings fsSettings = EnvironmentSettings.newInstance().useOldPlanner().inStreamingMode().build();
-        StreamExecutionEnvironment fsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
-        //StreamTableEnvironment fsTableEnv = StreamTableEnvironment.create(fsEnv, fsSettings);
+        // 1. 创建环境
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        env.setParallelism(1);
 
-        // FLINK BATCH QUERY
-        ExecutionEnvironment fbEnv = ExecutionEnvironment.getExecutionEnvironment();
-        BatchTableEnvironment fbTableEnv = BatchTableEnvironment.create(fbEnv);
+        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
-        // BLINK STREAMING QUERY
-        StreamExecutionEnvironment bsEnv = StreamExecutionEnvironment.getExecutionEnvironment();
-        EnvironmentSettings bsSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();
-        //StreamTableEnvironment bsTableEnv = StreamTableEnvironment.create(bsEnv, bsSettings);
+        // 1.1 基于老版本planner的流处理
+        EnvironmentSettings oldStreamSettings = EnvironmentSettings.newInstance()
+                .useOldPlanner()
+                .inStreamingMode()
+                .build();
+        StreamTableEnvironment oldStreamTableEnv = StreamTableEnvironment.create(env, oldStreamSettings);
 
+        // 1.2 基于老版本planner的批处理
+        ExecutionEnvironment batchEnv = ExecutionEnvironment.getExecutionEnvironment();
+        BatchTableEnvironment oldBatchTableEnv = BatchTableEnvironment.create(batchEnv);
 
-        // BLINK BATCH QUERY
-        EnvironmentSettings bbSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build();
-        TableEnvironment tableEnv = TableEnvironment.create(bbSettings);
+        // 1.3 基于Blink的流处理
+        EnvironmentSettings blinkStreamSettings = EnvironmentSettings.newInstance()
+                .useBlinkPlanner()
+                .inStreamingMode()
+                .build();
+        StreamTableEnvironment blinkStreamTableEnv = StreamTableEnvironment.create(env, blinkStreamSettings);
+
+        // 1.4 基于Blink的批处理
+        EnvironmentSettings blinkBatchSettings = EnvironmentSettings.newInstance()
+                .useBlinkPlanner()
+                .inBatchMode()
+                .build();
+        TableEnvironment blinkBatchTableEnv = TableEnvironment.create(blinkBatchSettings);
+
     }
 }

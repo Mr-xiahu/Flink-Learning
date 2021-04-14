@@ -17,48 +17,26 @@ import org.apache.flink.types.Row;
  * @author Xiahu
  * @create 2021/4/1
  * <p>
- * 将数据输入到表
+ * 使用过期API,创建表并做其他操作
  */
 public class Flink_Table_03 {
     public static void main(String[] args) throws Exception {
         //1.构造环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        EnvironmentSettings bbSettings = EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build();
-        StreamTableEnvironment streamTableEnvironment = StreamTableEnvironment.create(env);
-        TableEnvironment tableEnvironment = TableEnvironment.create(bbSettings);
-
-        //2.从文本读取真实数据
-        DataStreamSource<String> source = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\student");
-        DataStream<Student2> dataStream = source.map(new MapFunction<String, Student2>() {
-            @Override
-            public Student2 map(String s) throws Exception {
-                String[] split = s.split(",");
-                return new Student2(new Integer(split[0]), split[1], split[2]);
-            }
-        });
-
-
-        //3.转化为table
-        Table student = streamTableEnvironment.fromDataStream(dataStream, "id,name,sex");
-        streamTableEnvironment.createTemporaryView("student", student);
-
-        Table result = streamTableEnvironment.sqlQuery("select id,name,sex from student");
-        //streamTableEnvironment.toAppendStream(result, Row.class).print();
-
-        /*Schema schema = new Schema()
-                .field("id", DataTypes.INT())
-                .field("name", DataTypes.STRING())
-                .field("sex", DataTypes.STRING());*/
+        StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
         //输出表
-        /*tableEnvironment
-                .connect(new FileSystem().path("D:\\git\\study\\Flink-Learning\\"))
-                .withFormat(new OldCsv().fieldDelimiter("|").deriveSchema())
-                .withSchema(schema)
-                .createTemporaryTable("student_tmp");*/
-        tableEnvironment.executeSql("create table default_catalog.default_database.student_tmp(id int,name string,sex string)");
+        tableEnv
+                .connect(new FileSystem().path("F:\\git\\Flink-Learning\\flink-table\\src\\main\\resources\\student"))
+                .withFormat(new OldCsv())
+                .withSchema(new Schema()
+                        .field("id", DataTypes.INT())
+                        .field("name", DataTypes.STRING())
+                        .field("sex", DataTypes.STRING()))
+                .createTemporaryTable("intputTable");
 
-        result.executeInsert("student_tmp");
+        Table student = tableEnv.from("intputTable");
+        tableEnv.toAppendStream(student, Row.class).printToErr();
         env.execute();
 
     }
