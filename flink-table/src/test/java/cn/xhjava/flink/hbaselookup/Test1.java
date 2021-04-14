@@ -29,9 +29,9 @@ public class Test1 {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
         env.setParallelism(1);
-//        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\1000");
+        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\1000");
 //        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\10000");
-        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\100000");
+//        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\100000");
 //        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\1000000");
         DataStream<Student4> map = sourceStream.map(new MapFunction<String, Student4>() {
             @Override
@@ -53,14 +53,14 @@ public class Test1 {
         tableEnv.registerFunction("realtime_dim_1", baseLookupFunction);
         System.out.println("函数注册成功~~~");
 
-        Table table = tableEnv.sqlQuery("select id,classs,city,info.name,info.sex,info.realtime_dim_2_id from student,LATERAL TABLE(realtime_dim_1(id)) as T(rowkey,info)");
 
-        //tableEnv.toAppendStream(table, Row.class).print();
+        Table table = tableEnv.sqlQuery("select id,classs,city,info from student," +
+                "LATERAL TABLE(realtime_dim_1(id)) as T(rowkey,info)");
+
+        tableEnv.toAppendStream(table, Row.class).printToErr();
+
 
         env.execute();
-        long end = System.currentTimeMillis();
-        long speed = end - start;
-        System.out.println("共计耗费时间: " + new Double(speed / 1000.0));
 
     }
 }
