@@ -13,7 +13,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
  * @author Xiahu
  * @create 2021/4/1
  * <p>
- * 创建TableEnvironment
+ * 创建Table Api 执行环境 TableEnvironment
  */
 public class Flink_Table_01 {
     public static void main(String[] args) {
