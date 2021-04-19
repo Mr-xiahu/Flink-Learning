@@ -1,4 +1,4 @@
-package cn.xhjava.flink.table.demo;
+package cn.xhjava.flink.table.demo_hbase;
 
 import cn.xhjava.domain.Student2;
 import cn.xhjava.flink.table.udf.tablefuncation.MyHbaseLookupFuncation;
@@ -9,8 +9,6 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
-
-import java.text.SimpleDateFormat;
 
 /**
  * @author Xiahu

@@ -1,4 +1,4 @@
-package cn.xhjava.flink.table.demo;
+package cn.xhjava.flink.table.demo_hbase;
 
 import cn.xhjava.domain.SensorReading;
 import cn.xhjava.flink.table.udf.tablefuncation.Split;

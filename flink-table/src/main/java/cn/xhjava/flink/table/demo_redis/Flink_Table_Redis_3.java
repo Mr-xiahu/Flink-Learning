@@ -1,42 +1,39 @@
-package cn.xhjava.flink.table.demo;
+package cn.xhjava.flink.table.demo_redis;
 
 import cn.xhjava.domain.Student4;
-import cn.xhjava.util.HbaseFamilyParse;
+import cn.xhjava.flink.table.udf.tablefuncation.RedisLookupFunction;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
-import org.apache.flink.connector.hbase.source.HBaseLookupFunction;
-import org.apache.flink.connector.hbase.util.HBaseTableSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.types.Row;
-import org.apache.hadoop.conf.Configuration;
 
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 /**
  * @author Xiahu
- * @create 2021/4/9
- * kafka 实时数据 lookup hbase维度数据性能测试
- * Hbase 表个数: 1
- * 速度: 500 -- 600 /s
+ * @create 2021/4/19
+ *
+ *  测试redis lookup 3 张维度表 性能
+ *
+ *  300/s
  */
-public class FlinkTable_05_KafkaLookupHbase02 {
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
+public class Flink_Table_Redis_3 {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
         env.setParallelism(1);
         Properties prop = new Properties();
         prop.setProperty("bootstrap.servers", "192.168.0.113:9092");
-        prop.setProperty("group.id", "flink_kafka_test");
+        prop.setProperty("group.id", "flink_kafka");
         FlinkKafkaConsumer<String> kafkaSource = new FlinkKafkaConsumer<>("flink_kafka_source", new SimpleStringSchema(), prop);
         DataStreamSource<String> source = env.addSource(kafkaSource);
+
+
+        //DataStreamSource<String> source = env.readTextFile("D:\\code\\github\\Flink-Learning\\flink-table\\src\\main\\resources\\student");
         DataStream<Student4> map = source.map(new MapFunction<String, Student4>() {
             @Override
             public Student4 map(String s) throws Exception {
@@ -48,19 +45,18 @@ public class FlinkTable_05_KafkaLookupHbase02 {
         Table student = tableEnv.fromDataStream(map, "id,classs,city");
         tableEnv.createTemporaryView("student", student);
 
-        Configuration configuration = new Configuration();
-        configuration.set("hbase.zookeeper.quorum", "192.168.0.115");
 
-        // 1.
-        HBaseTableSchema schema = HbaseFamilyParse.parseHBaseTableSchema("name,realtime_dim_2_id,sex", "info");
-        HBaseLookupFunction baseLookupFunction = new HBaseLookupFunction(configuration, "lookup:realtime_dim_1", schema);
+        RedisLookupFunction function = new RedisLookupFunction("redis_test_1");
+        RedisLookupFunction function2 = new RedisLookupFunction("redis_test_2");
+        RedisLookupFunction function3 = new RedisLookupFunction("redis_test_3");
 
-        long start = System.currentTimeMillis();
+
         //注册函数
-        tableEnv.registerFunction("realtime_dim_1", baseLookupFunction);
+        tableEnv.registerFunction("redis_test_1", function);
+        tableEnv.registerFunction("redis_test_2", function2);
+        tableEnv.registerFunction("redis_test_3", function3);
 
         System.out.println("函数注册成功~~~");
-
 
         tableEnv.executeSql("CREATE TABLE realtime_result2( \n" +
                 "rowkey STRING, \n" +
@@ -71,15 +67,21 @@ public class FlinkTable_05_KafkaLookupHbase02 {
                 "'table-name' = 'lookup:realtime_result2', \n" +
                 "'zookeeper.quorum' = '192.168.0.115:2181', \n" +
                 "'zookeeper.znode.parent' = '/hbase', \n" +
-                "'sink.buffer-flush.interval' = '10m',\n" +
+                "'sink.buffer-flush.interval' = '100m',\n" +
                 "'sink.buffer-flush.max-rows' = '1000',\n" +
-                "'sink.buffer-flush.interval' = '30s',\n" +
+                "'sink.buffer-flush.interval' = '300s',\n" +
                 "'sink.parallelism' = '1'\n" +
                 ")");
 
-        tableEnv.executeSql("INSERT INTO realtime_result2 SELECT id, ROW(classs, classs, city) from ( " +
-                "select id,classs,city,info from student, " +
-                "LATERAL TABLE(realtime_dim_1(id)) as T(rowkey,info)) as info");
+
+        //Table table = tableEnv.sqlQuery("select id,classs,city,line from student, LATERAL TABLE(redis_test_1(id)) as T(line)");
+        tableEnv.executeSql("INSERT INTO realtime_result2 SELECT id, ROW(classs, classs, city) from (" +
+                "select id,classs,city,line,line2,line3 from student, " +
+                "LATERAL TABLE(redis_test_1(id)) as T(line)," +
+                "LATERAL TABLE(redis_test_2(id)) as T2(line2)," +
+                "LATERAL TABLE(redis_test_3(id)) as T3(line3)" +
+                ") as info");
+        //tableEnv.toAppendStream(table, Row.class).printToErr();
 
         env.execute();
 

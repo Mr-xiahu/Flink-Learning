@@ -37,7 +37,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>cn.xhjava.flink.table.demo.FlinkTable_05_KafkaLookupHbase01</mainClass>
+                            <mainClass>cn.xhjava.flink.table.demo_hbase.FlinkTable_05_KafkaLookupHbase01</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

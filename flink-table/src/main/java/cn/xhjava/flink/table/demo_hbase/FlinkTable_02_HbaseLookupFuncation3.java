@@ -1,4 +1,4 @@
-package cn.xhjava.flink.table.demo;
+package cn.xhjava.flink.table.demo_hbase;
 
 import cn.xhjava.domain.Student3;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -18,9 +18,9 @@ import java.text.SimpleDateFormat;
  * @author Xiahu
  * @create 2021/4/6
  * <p>
- * 流数据实时 look up hbase 双表表数据查询,数据类型 Row
+ * 流数据实时 look up hbase 单表数据查询,数据类型 Row
  */
-public class FlinkTable_02_HbaseLookupFuncation4 {
+public class FlinkTable_02_HbaseLookupFuncation3 {
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) throws Exception {
@@ -49,19 +49,11 @@ public class FlinkTable_02_HbaseLookupFuncation4 {
         baseTableSchema.addColumn("info","man",String.class);
         HBaseLookupFunction baseLookupFunction = new HBaseLookupFunction(configuration, "test:hbase_user_behavior", baseTableSchema);
 
-        HBaseTableSchema baseTableSchema2 = new HBaseTableSchema();
-        baseTableSchema2.setRowKey("rowkey", String.class);
-        baseTableSchema2.addColumn("info","age",String.class);
-        baseTableSchema2.addColumn("info","name",String.class);
-        baseTableSchema2.addColumn("info","sex",String.class);
-        HBaseLookupFunction baseLookupFunction2 = new HBaseLookupFunction(configuration, "test:hbase_user_behavior2", baseTableSchema2);
-
         //注册函数
         tableEnv.registerFunction("hbaseLookup", baseLookupFunction);
-        tableEnv.registerFunction("hbaseLookup2", baseLookupFunction2);
         System.out.println("函数注册成功~~~");
 
-        Table table = tableEnv.sqlQuery("select id,info1.small,info1.yellow,info1.man,info2 from student,LATERAL TABLE(hbaseLookup(id)) as T(rowkey1,info1),LATERAL TABLE(hbaseLookup2(info1.man)) as T2(rowkey2,info2)");
+        Table table = tableEnv.sqlQuery("select id,name,sex,info.small,info.yellow,info.man from student,LATERAL TABLE(hbaseLookup(id)) as T(rowkey,info)");
         //Table table = tableEnv.sqlQuery("select id,name,sex,T from student,LATERAL TABLE(hbaseLookup(id)) as T");
 
         tableEnv.toAppendStream(table, Row.class).print();

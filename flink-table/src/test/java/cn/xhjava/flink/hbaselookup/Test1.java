@@ -1,6 +1,5 @@
 package cn.xhjava.flink.hbaselookup;
 
-import cn.xhjava.domain.Student3;
 import cn.xhjava.domain.Student4;
 import cn.xhjava.util.HbaseFamilyParse;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -29,7 +28,7 @@ public class Test1 {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
         env.setParallelism(1);
-        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\1000");
+        DataStreamSource<String> sourceStream = env.readTextFile("D:\\code\\github\\Flink-Learning\\flink-table\\src\\main\\resources\\student");
 //        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\10000");
 //        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\100000");
 //        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\1000000");
