@@ -24,6 +24,7 @@ public class Flink_Table_03 {
         //1.构造环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
+        env.setParallelism(1);
 
         //输出表
         tableEnv

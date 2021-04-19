@@ -35,6 +35,7 @@ import java.util.*;
 /**
  * @author Xiahu
  * @create 2021/4/7
+ * 自定义实现HbaseLookupFuncation,批量查询,结果有问题
  */
 public class MyHbaseLookupFuncationBatch extends TableFunction<Row> {
     private static final Logger LOG = LoggerFactory.getLogger(HBaseLookupFunction.class);

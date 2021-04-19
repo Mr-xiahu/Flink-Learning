@@ -22,6 +22,8 @@ import java.util.HashMap;
 /**
  * @author Xiahu
  * @create 2021/4/7
+ * 自定义实现HbaseLookupFuncation,返回值---POJO
+ * TableFunction<HbaseUserBehavior>
  */
 public class MyHbaseLookupFuncation3 extends TableFunction<HbaseUserBehavior> {
     private static final Logger LOG = LoggerFactory.getLogger(HBaseLookupFunction.class);
