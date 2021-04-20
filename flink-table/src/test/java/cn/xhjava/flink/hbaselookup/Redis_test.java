@@ -6,6 +6,8 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 
+import java.util.List;
+
 /**
  * @author Xiahu
  * @create 2021/4/19
@@ -34,6 +36,16 @@ public class Redis_test {
         }
         pipelined.sync();
 
+    }
+
+    @Test
+    public void getAllKeyValue() {
+        String tableNmae = "redis_test_5";
+        pipelined.get("redis_test_5_*");
+        List<Object> objects = pipelined.syncAndReturnAll();
+        for (Object obj : objects) {
+            System.out.println(obj);
+        }
     }
 
     @After

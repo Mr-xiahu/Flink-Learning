@@ -1,12 +1,14 @@
 package cn.xhjava.domain;
 
 
+import java.io.Serializable;
+
 /**
  * @author Xiahu
  * @create 2020/10/27
  */
 
-public class Student4 {
+public class Student4 implements Serializable {
     private String id;
     private String classs;
     private String city;

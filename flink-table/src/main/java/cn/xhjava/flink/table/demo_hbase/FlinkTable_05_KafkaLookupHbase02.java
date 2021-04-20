@@ -76,9 +76,11 @@ public class FlinkTable_05_KafkaLookupHbase02 {
                 "'sink.parallelism' = '1'\n" +
                 ")");
 
-        tableEnv.executeSql("INSERT INTO realtime_result2 SELECT id, ROW(classs, classs, city) from ( " +
+
+        tableEnv.sqlQuery("select * from student");
+        /*tableEnv.executeSql("INSERT INTO realtime_result2 SELECT id, ROW(classs, classs, city) from ( " +
                 "select id,classs,city,info from student, " +
-                "LATERAL TABLE(realtime_dim_1(id)) as T(rowkey,info)) as info");
+                "LATERAL TABLE(realtime_dim_1(id)) as T(rowkey,info)) as info");*/
 
         env.execute();
 

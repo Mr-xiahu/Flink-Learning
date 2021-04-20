@@ -14,6 +14,7 @@
         <module>flink-demo</module>
         <module>flink-connect</module>
         <module>flink-table</module>
+        <module>flink-stream</module>
     </modules>
 
 
@@ -95,7 +96,6 @@
             <artifactId>flink-avro</artifactId>
             <version>${flink.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-sql-connector-hbase-1.4 -->
         <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-sql-connector-hbase-2.2 -->
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -109,7 +109,7 @@
         </dependency>
 
 
-        <!--<dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.7</version>
@@ -120,7 +120,7 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
             <scope>runtime</scope>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
