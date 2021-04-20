@@ -30,6 +30,8 @@ import java.io.IOException;
 /**
  * @author Xiahu
  * @create 2021/4/7
+ * 自定义实现HbaseLookupFuncation,返回值---RowData
+ * TableFunction<RowData>
  */
 @Internal
 public class MyHbaseLookupFuncation2 extends TableFunction<RowData> {
