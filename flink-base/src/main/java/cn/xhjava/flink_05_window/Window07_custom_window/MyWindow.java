@@ -17,5 +17,4 @@ public class MyWindow<T, KEY> extends KeyedStream<T, KEY> {
     public MyWindow(DataStream<T> dataStream, KeySelector<T, KEY> keySelector, TypeInformation<KEY> keyType) {
         super(dataStream, keySelector, keyType);
     }
-
 }

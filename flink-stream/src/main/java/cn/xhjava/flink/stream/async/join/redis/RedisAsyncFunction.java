@@ -10,9 +10,7 @@ import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
 import org.apache.flink.streaming.api.functions.async.ResultFuture;
 import org.apache.flink.streaming.api.functions.async.RichAsyncFunction;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -39,18 +37,10 @@ public class RedisAsyncFunction extends RichAsyncFunction<Student4, Student4> im
                 .build();
         jedis = new Jedis("node2");
         Set<String> keySet = jedis.keys(tableName + "_*");
-        Pipeline pipelined = jedis.pipelined();
         for (String key : keySet) {
-            pipelined = jedis.pipelined();
-            pipelined.get(key);
+            String value = jedis.get(key);
+            cache.put(key, value);
         }
-        List<Object> values = pipelined.syncAndReturnAll();
-        for (Object obj : values) {
-            String value = (String) obj;
-            //todo
-            //cache.put(, value);
-        }
-
     }
 
     @Override
