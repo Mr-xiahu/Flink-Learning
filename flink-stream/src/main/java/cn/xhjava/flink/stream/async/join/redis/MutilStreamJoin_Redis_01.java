@@ -15,7 +15,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
  * @author Xiahu
  * @create 2021/4/20
  * <p>
- * window + function + redis
+ * TumblingProcessingTimeWindows + function + redis
  */
 
 class MutilStreamJoin_Redis_01 {

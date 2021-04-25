@@ -1,6 +1,6 @@
 package cn.xhjava.flink.stream.async.join.redis;
 
-import cn.xhjava.flink.stream.pojo.Student4;
+import cn.xhjava.flink.stream.pojo.Student5;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.util.Collector;
 import redis.clients.jedis.Jedis;
@@ -15,17 +15,17 @@ import java.util.concurrent.CountDownLatch;
  */
 
 @Slf4j
-public class RedisMultipleThread implements Runnable {
+public class RedisMultipleThread2 implements Runnable {
 
 
-    private List<Student4> sourceData;
-    private Collector<Student4> out;
+    private List<Student5> sourceData;
+    private Collector<Student5> out;
     private LinkedHashSet<String> tableList;
     private Jedis jedis;
     private String threadName;
     private CountDownLatch countDownLatch;
 
-    public RedisMultipleThread(List<Student4> sourceData, Collector<Student4> out, LinkedHashSet<String> tableList,  CountDownLatch countDownLatch) {
+    public RedisMultipleThread2(List<Student5> sourceData, Collector<Student5> out, LinkedHashSet<String> tableList, CountDownLatch countDownLatch) {
         this.sourceData = sourceData;
         this.out = out;
         this.tableList = tableList;
@@ -37,12 +37,12 @@ public class RedisMultipleThread implements Runnable {
     @Override
     public void run() {
         long startTime = System.currentTimeMillis();
-        List<Student4> tmpJoinData = new ArrayList<>();
+        List<Student5> tmpJoinData = new ArrayList<>();
         LinkedList<String> keyList = new LinkedList<>();
         for (String table : tableList) {
             if (tmpJoinData.isEmpty()) {
                 for (int i = 0; i < sourceData.size(); i++) {
-                    Student4 student = sourceData.get(i);
+                    Student5 student = sourceData.get(i);
                     String key = table + "_" + student.getId();
                     keyList.add(key);
                 }
@@ -50,7 +50,7 @@ public class RedisMultipleThread implements Runnable {
                 Map<String, Map<String, String>> redisData = getRedisData(keyList);
 
                 //再次遍历剩余的SourceData,join上一批次没有关联的数据
-                for (Student4 student : sourceData) {
+                for (Student5 student : sourceData) {
                     String key = table + "_" + student.getId();
                     if (redisData.containsKey(key)) {
                         Map<String, String> dataMap = redisData.get(key);
@@ -68,7 +68,7 @@ public class RedisMultipleThread implements Runnable {
 
                 //判断关联建是否存在于缓存中,如果不存在,去查找
                 for (int i = 0; i < tmpJoinData.size(); i++) {
-                    Student4 student = tmpJoinData.get(i);
+                    Student5 student = tmpJoinData.get(i);
                     String key = table + "_" + student.getId();
                     keyList.add(key);
                 }
@@ -77,7 +77,7 @@ public class RedisMultipleThread implements Runnable {
 
 
                 //再次遍历剩余的SourceData,join上一批次没有关联的数据
-                for (Student4 student : tmpJoinData) {
+                for (Student5 student : tmpJoinData) {
                     String key = table + "_" + student.getId();
                     if (redisData.containsKey(key)) {
                         Map<String, String> dataMap = redisData.get(key);
@@ -95,12 +95,12 @@ public class RedisMultipleThread implements Runnable {
         int count = 0;
 
         if (tmpJoinData.isEmpty()) {
-            for (Student4 student : sourceData) {
+            for (Student5 student : sourceData) {
                 out.collect(student);
             }
             count = sourceData.size();
         } else {
-            for (Student4 student : tmpJoinData) {
+            for (Student5 student : tmpJoinData) {
                 out.collect(student);
             }
             count = tmpJoinData.size();

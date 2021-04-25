@@ -4,15 +4,15 @@ import cn.xhjava.domain.UserBrowseLog;
 import cn.xhjava.domain.UserClickLog;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.flink.streaming.api.TimeCharacteristic;
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.streaming.api.functions.co.ProcessJoinFunction;
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor;
 import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.util.Collector;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -43,7 +43,7 @@ public class Flink_03_IntervalJoin {
         browseProperties.put("bootstrap.servers", kafkaBootstrapServers);
         browseProperties.put("group.id", groupid);
         DataStream<UserBrowseLog> browseStream = env
-                .addSource(new FlinkKafkaConsumer010<>(browseTopic, new SimpleStringSchema(), browseProperties).setStartFromEarliest())
+                .addSource(new FlinkKafkaConsumer<>(browseTopic, new SimpleStringSchema(), browseProperties).setStartFromEarliest())
                 .process(new BrowseKafkaProcessFunction())
                 .assignTimestampsAndWatermarks(new BrowseBoundedOutOfOrdernessTimestampExtractor(Time.seconds(0)));
 
@@ -52,7 +52,7 @@ public class Flink_03_IntervalJoin {
         clickProperties.put("bootstrap.servers", kafkaBootstrapServers);
         clickProperties.put("group.id", groupid);
         DataStream<UserClickLog> clickStream = env
-                .addSource(new FlinkKafkaConsumer010<>(clickTopic, new SimpleStringSchema(), clickProperties).setStartFromEarliest())
+                .addSource(new FlinkKafkaConsumer<>(clickTopic, new SimpleStringSchema(), clickProperties).setStartFromEarliest())
                 .process(new ClickKafkaProcessFunction())
                 .assignTimestampsAndWatermarks(new ClickBoundedOutOfOrdernessTimestampExtractor(Time.seconds(0)));
 
