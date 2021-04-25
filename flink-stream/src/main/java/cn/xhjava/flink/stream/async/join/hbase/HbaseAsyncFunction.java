@@ -1,6 +1,6 @@
 package cn.xhjava.flink.stream.async.join.hbase;
 
-import cn.xhjava.domain.Student4;
+import cn.xhjava.flink.stream.pojo.Student4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import lombok.extern.slf4j.Slf4j;

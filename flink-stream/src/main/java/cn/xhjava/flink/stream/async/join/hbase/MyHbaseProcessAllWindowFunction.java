@@ -1,6 +1,6 @@
 package cn.xhjava.flink.stream.async.join.hbase;
 
-import cn.xhjava.domain.Student4;
+import cn.xhjava.flink.stream.pojo.Student4;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
@@ -24,7 +24,7 @@ import java.util.*;
  * @create 2021/4/21
  */
 @Slf4j
-public class MyProcessAllWindowFunction extends ProcessAllWindowFunction<Student4, Student4, TimeWindow> implements CheckpointedFunction {
+public class MyHbaseProcessAllWindowFunction extends ProcessAllWindowFunction<Student4, Student4, TimeWindow> implements CheckpointedFunction {
     private org.apache.hadoop.conf.Configuration configuration = null;
     private Connection conn = null;
     private String hbaseTableName;
@@ -34,7 +34,7 @@ public class MyProcessAllWindowFunction extends ProcessAllWindowFunction<Student
     private Map<String, Map<String, String>> cache = new HashMap<>();
 
 
-    public MyProcessAllWindowFunction(String hbaseTableName) {
+    public MyHbaseProcessAllWindowFunction(String hbaseTableName) {
         this.hbaseTableName = hbaseTableName;
     }
 

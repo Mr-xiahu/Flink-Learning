@@ -29,23 +29,33 @@ public class Redis_test {
 
     @Test
     public void insertDataToRedis() {
-        String tableNmae = "redis_test_5";
-        int count = 20000000;
-        for (int i = 1; i <= count; i++) {
-            pipelined.set(tableNmae + "_" + i, String.format(FORMAT, i, "zhangsan_" + i, "10"));
+        for (int j = 1; j <= 45; j++) {
+            String tableNmae = "redis_test_" + j;
+            int count = 300000;
+            for (int i = 1; i <= count; i++) {
+                pipelined.set(tableNmae + "_" + i, String.format(FORMAT, i, "zhangsan_" + tableNmae, tableNmae));
+            }
+            pipelined.sync();
         }
-        pipelined.sync();
 
     }
 
     @Test
     public void getAllKeyValue() {
-        String tableNmae = "redis_test_5";
-        pipelined.get("redis_test_5_*");
+        String tableNmae = "redis_test_5_1";
+        pipelined.get("redis_test_5_1");
+        pipelined.get("redis_test_5_2");
+        pipelined.get("redis_test_5_3000000000");
+        pipelined.get("redis_test_5_4");
+        pipelined.get("redis_test_5_5");
         List<Object> objects = pipelined.syncAndReturnAll();
         for (Object obj : objects) {
-            System.out.println(obj);
+            if (null != obj) {
+                System.out.println(obj);
+            }
         }
+
+        pipelined.close();
     }
 
     @After

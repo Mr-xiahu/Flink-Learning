@@ -1,6 +1,6 @@
 package cn.xhjava.flink.stream.sink.funcations;
 
-import cn.xhjava.domain.Student4;
+import cn.xhjava.flink.stream.pojo.Student4;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
@@ -49,10 +49,10 @@ public class HbaseSinkFunction extends RichSinkFunction<Student4> implements Che
         put.addColumn(Bytes.toBytes("info"), Bytes.toBytes("city"), Bytes.toBytes(value.getCity()));
         puts.add(put);
 
-        if (puts.size() >= 1000) {
-            table.put(puts);
-            puts.clear();
-        }
+//        if (puts.size() >= 1000) {
+//            table.put(puts);
+//            puts.clear();
+//        }
     }
 
     @Override

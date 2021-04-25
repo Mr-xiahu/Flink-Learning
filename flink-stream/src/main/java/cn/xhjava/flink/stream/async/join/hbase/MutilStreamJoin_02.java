@@ -1,6 +1,6 @@
 package cn.xhjava.flink.stream.async.join.hbase;
 
-import cn.xhjava.domain.Student4;
+import cn.xhjava.flink.stream.pojo.Student4;
 import cn.xhjava.flink.stream.sink.funcations.HbaseSinkFunction;
 import cn.xhjava.flink.stream.source.SourceTool;
 import org.apache.flink.streaming.api.datastream.AsyncDataStream;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * 五张表关联查询
  */
 
-class MutilStreamJoin_02 {
+public class MutilStreamJoin_02 {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
@@ -41,7 +41,7 @@ class MutilStreamJoin_02 {
         HbaseAsyncFunction hbaseAsyncFunction2 = new HbaseAsyncFunction("lookup:realtime_dim_2");
         HbaseAsyncFunction hbaseAsyncFunction3 = new HbaseAsyncFunction("lookup:realtime_dim_3");
         HbaseAsyncFunction hbaseAsyncFunction4 = new HbaseAsyncFunction("lookup:realtime_dim_4");
-        HbaseAsyncFunction hbaseAsyncFunction5 = new HbaseAsyncFunction("lookup:realtime_dim_5");
+        /*HbaseAsyncFunction hbaseAsyncFunction5 = new HbaseAsyncFunction("lookup:realtime_dim_5");
         HbaseAsyncFunction hbaseAsyncFunction6 = new HbaseAsyncFunction("lookup:realtime_dim_6");
         HbaseAsyncFunction hbaseAsyncFunction7 = new HbaseAsyncFunction("lookup:realtime_dim_7");
         HbaseAsyncFunction hbaseAsyncFunction8 = new HbaseAsyncFunction("lookup:realtime_dim_8");
@@ -81,13 +81,13 @@ class MutilStreamJoin_02 {
         HbaseAsyncFunction hbaseAsyncFunction42 = new HbaseAsyncFunction("lookup:realtime_dim_42");
         HbaseAsyncFunction hbaseAsyncFunction43 = new HbaseAsyncFunction("lookup:realtime_dim_43");
         HbaseAsyncFunction hbaseAsyncFunction44 = new HbaseAsyncFunction("lookup:realtime_dim_44");
-        HbaseAsyncFunction hbaseAsyncFunction45 = new HbaseAsyncFunction("lookup:realtime_dim_45");
+        HbaseAsyncFunction hbaseAsyncFunction45 = new HbaseAsyncFunction("lookup:realtime_dim_45");*/
 
         DataStream<Student4> resultStream1 = AsyncDataStream.orderedWait(mapStream, hbaseAsyncFunction1, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream2 = AsyncDataStream.orderedWait(resultStream1, hbaseAsyncFunction2, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream3 = AsyncDataStream.orderedWait(resultStream2, hbaseAsyncFunction3, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream4 = AsyncDataStream.orderedWait(resultStream3, hbaseAsyncFunction4, 500, TimeUnit.MILLISECONDS, 1000);
-        DataStream<Student4> resultStream5 = AsyncDataStream.orderedWait(resultStream4, hbaseAsyncFunction5, 500, TimeUnit.MILLISECONDS, 1000);
+        /*DataStream<Student4> resultStream5 = AsyncDataStream.orderedWait(resultStream4, hbaseAsyncFunction5, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream6 = AsyncDataStream.orderedWait(resultStream5, hbaseAsyncFunction6, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream7 = AsyncDataStream.orderedWait(resultStream6, hbaseAsyncFunction7, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream8 = AsyncDataStream.orderedWait(resultStream7, hbaseAsyncFunction8, 500, TimeUnit.MILLISECONDS, 1000);
@@ -127,12 +127,12 @@ class MutilStreamJoin_02 {
         DataStream<Student4> resultStream42 = AsyncDataStream.orderedWait(resultStream41, hbaseAsyncFunction42, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream43 = AsyncDataStream.orderedWait(resultStream42, hbaseAsyncFunction43, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream44 = AsyncDataStream.orderedWait(resultStream43, hbaseAsyncFunction44, 500, TimeUnit.MILLISECONDS, 1000);
-        DataStream<Student4> resultStream45 = AsyncDataStream.orderedWait(resultStream44, hbaseAsyncFunction45, 500, TimeUnit.MILLISECONDS, 1000);
+        DataStream<Student4> resultStream45 = AsyncDataStream.orderedWait(resultStream44, hbaseAsyncFunction45, 500, TimeUnit.MILLISECONDS, 1000);*/
 
 
 
         HbaseSinkFunction sinkFunction = new HbaseSinkFunction("sink:fink_api_sink_1");
-        resultStream45.addSink(sinkFunction);
+        resultStream4.addSink(sinkFunction);
 
         env.execute();
 
