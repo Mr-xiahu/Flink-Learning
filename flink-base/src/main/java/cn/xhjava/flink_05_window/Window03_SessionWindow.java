@@ -19,7 +19,7 @@ public class Window03_SessionWindow {
          *      1.使用socketTextStream作为dataSource,接收数据
          *      2.使用flatMap将接收的word封装为成元组Tuple2<String,Integre>
          *      3.根据word进行分组,将word相同的分为同一组
-         *      4.使用会话窗口:如果 30s 内没出现数据则认为超出会话时长，然后计算这个窗口的和
+         *      4.使用会话窗口:如果 10s 内没出现数据则认为超出会话时长，然后计算这个窗口的和
          */
 
         //设置运行环境

@@ -1,6 +1,7 @@
-package cn.xhjava.flink.stream.async.join.redis;
+package cn.xhjava.flink.strea.join.redis;
 
 import cn.xhjava.flink.stream.pojo.Student5;
+import cn.xhjava.flink.stream.sink.funcations.FileSinkFunction;
 import cn.xhjava.flink.stream.source.SourceTool;
 import org.apache.flink.runtime.state.filesystem.FsStateBackend;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -16,7 +17,9 @@ import org.apache.flink.streaming.runtime.operators.util.AssignerWithPeriodicWat
  * @author Xiahu
  * @create 2021/4/20
  * <p>
- * TumblingEventTimeWindows + function + redis
+ * TumblingEventTimeWindows + function + redis + 多线程
+ *
+ * EventTime 不被使用
  */
 
 class MutilStreamJoin_Redis_05 {
@@ -54,6 +57,8 @@ class MutilStreamJoin_Redis_05 {
                 .windowAll(TumblingEventTimeWindows.of(Time.seconds(10)))
                 .process(processFunction);
 
+        FileSinkFunction fileSinkFunction = new FileSinkFunction("D:\\code\\github\\Flink-Learning\\flink-stream\\src\\main\\resources\\sink.txt");
+        process.addSink(fileSinkFunction);
 
         //process.printToErr();
 

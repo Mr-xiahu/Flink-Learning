@@ -1,9 +1,11 @@
 package cn.xhjava.flink_05_window;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
 
@@ -36,8 +38,16 @@ public class Window02_TimeWindow {
                         }
                     }
                 })
-                .keyBy(0)
-                .timeWindow(Time.seconds(30))
+                .keyBy(new KeySelector<Tuple2<String, Integer>, Object>() {
+                    @Override
+                    public Object getKey(Tuple2<String, Integer> value) throws Exception {
+                        return value.f1;
+                    }
+                })
+                //处理时间窗口
+                .windowAll(TumblingProcessingTimeWindows.of(Time.seconds(10)))
+                //事件时间窗口
+                //.windowAll(TumblingEventTimeWindows.of(Time.seconds(10)))
                 .sum(1).print();
         env.execute();
     }

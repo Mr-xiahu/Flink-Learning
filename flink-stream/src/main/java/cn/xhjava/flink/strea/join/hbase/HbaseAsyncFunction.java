@@ -1,4 +1,4 @@
-package cn.xhjava.flink.stream.async.join.hbase;
+package cn.xhjava.flink.strea.join.hbase;
 
 import cn.xhjava.flink.stream.pojo.Student4;
 import com.google.common.cache.Cache;

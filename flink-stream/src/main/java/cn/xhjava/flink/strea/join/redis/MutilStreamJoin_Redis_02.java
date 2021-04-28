@@ -1,4 +1,4 @@
-package cn.xhjava.flink.stream.async.join.redis;
+package cn.xhjava.flink.strea.join.redis;
 
 import cn.xhjava.flink.stream.pojo.Student4;
 import cn.xhjava.flink.stream.sink.funcations.HbaseSinkFunction;

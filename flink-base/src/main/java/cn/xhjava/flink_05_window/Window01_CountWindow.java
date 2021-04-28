@@ -1,6 +1,7 @@
 package cn.xhjava.flink_05_window;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
+import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -49,7 +50,12 @@ public class Window01_CountWindow {
                         }
                     }
                 })
-                .keyBy(0)
+                .keyBy(new KeySelector<Tuple3<Integer, String, Long>, Object>() {
+                    @Override
+                    public Object getKey(Tuple3<Integer, String, Long> value) throws Exception {
+                        return value.f0;
+                    }
+                })
                 .countWindow(2)
                 .sum(2)
                 .printToErr();

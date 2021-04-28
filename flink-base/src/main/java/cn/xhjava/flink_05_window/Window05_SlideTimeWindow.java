@@ -2,9 +2,9 @@ package cn.xhjava.flink_05_window;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.assigners.SlidingProcessingTimeWindows;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
 
@@ -37,7 +37,7 @@ public class Window05_SlideTimeWindow {
                         }
                     }
                 }).keyBy(0)
-                .timeWindow(Time.seconds(30), Time.seconds(15))
+                .windowAll(SlidingProcessingTimeWindows.of(Time.seconds(15), Time.seconds(30)))
                 .sum(1).print();
         env.execute();
     }

@@ -54,7 +54,6 @@ public class Redis_test {
                 System.out.println(obj);
             }
         }
-
         pipelined.close();
     }
 

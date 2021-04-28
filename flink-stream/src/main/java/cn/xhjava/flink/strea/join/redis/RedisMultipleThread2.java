@@ -1,4 +1,4 @@
-package cn.xhjava.flink.stream.async.join.redis;
+package cn.xhjava.flink.strea.join.redis;
 
 import cn.xhjava.flink.stream.pojo.Student5;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +12,8 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author Xiahu
  * @create 2021/4/25
+ *
+ *  事件时间窗口+ 多线程实现
  */
 
 @Slf4j

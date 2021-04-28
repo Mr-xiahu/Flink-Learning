@@ -1,4 +1,4 @@
-package cn.xhjava.flink.stream.async.join.redis;
+package cn.xhjava.flink.strea.join.redis;
 
 import cn.xhjava.flink.stream.pojo.Student4;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,8 @@ import java.util.*;
 /**
  * @author Xiahu
  * @create 2021/4/21
+ *
+ * 处理时间 + 单线程
  */
 @Slf4j
 public class MyRedisProcessAllWindowFunction extends ProcessAllWindowFunction<Student4, Student4, TimeWindow> implements CheckpointedFunction {
