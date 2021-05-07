@@ -58,6 +58,7 @@ class MutilStreamJoin_Redis_01 {
 
         HbaseSinkFunction sinkFunction = new HbaseSinkFunction("sink:fink_api_sink_1");
         process.addSink(sinkFunction);
+        System.out.println(env.getExecutionPlan());
         env.execute();
 
 
