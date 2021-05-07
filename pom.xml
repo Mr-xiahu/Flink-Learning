@@ -15,6 +15,7 @@
         <module>flink-connect</module>
         <module>flink-table</module>
         <module>flink-stream</module>
+        <module>flink-submit</module>
     </modules>
 
 
