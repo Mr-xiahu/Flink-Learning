@@ -35,7 +35,7 @@ public class GPCopySink extends RichSinkFunction<OggMsg> implements Checkpointed
     private Properties prop;
     //用于缓存数据
     private Map<String, GreenPlumCopyEvent> bufferDataMap;
-    //状态编程
+    //状态
     private ListState<Tuple2<String, String>> checkpointState;
 
     //sftp
@@ -95,6 +95,7 @@ public class GPCopySink extends RichSinkFunction<OggMsg> implements Checkpointed
 
     @Override
     public void invoke(OggMsg oggMsg, Context context) throws Exception {
+        GreenPlumCopyEvent event = null;
         String value = oggMsgToString(oggMsg, columnList);
         checkpointState.add(new Tuple2<>(oggMsg.getTable(), value));
 
@@ -103,13 +104,13 @@ public class GPCopySink extends RichSinkFunction<OggMsg> implements Checkpointed
         if (bufferedWriterMap.containsKey(tableName)) {
             bufferedWriterMap.get(tableName).write(value);
         } else {
-            GreenPlumCopyEvent event = buildGreenPlumCopyEvent(oggMsg.getTable(), value);
+            event = buildGreenPlumCopyEvent(oggMsg.getTable(), value);
             event.setDataList(null);
             BufferedWriter writer = fileOperator(event);
             bufferedWriterMap.put(tableName, writer);
             writer.write(value);
         }
-
+        bufferDataMap.put(oggMsg.getTable(), event);
 
     }
 
@@ -174,7 +175,7 @@ public class GPCopySink extends RichSinkFunction<OggMsg> implements Checkpointed
         try {
             //shell file 写入
             writer = new BufferedWriter(new OutputStreamWriter(this.ftpHelper.getOutputStream(event.getShellPath()), "UTF-8"));
-            String[] split = event.getTable().split(".");
+            String[] split = event.getTable().split("\\.");
             String shellValue = String.format(this.shellValue,
                     gpDatabaseUser,
                     split[0],
@@ -213,8 +214,6 @@ public class GPCopySink extends RichSinkFunction<OggMsg> implements Checkpointed
                     String table = entry.getKey();
                     entry.getValue().flush();
                     entry.getValue().close();
-                    bufferedWriterMap.remove(entry.getKey());
-
                     GreenPlumCopyEvent event = bufferDataMap.get(table);
                     //执行gp copy 命令,删除源库
                     Set<String> fullFileNameToDelete = new HashSet<>();
@@ -222,10 +221,12 @@ public class GPCopySink extends RichSinkFunction<OggMsg> implements Checkpointed
                     fullFileNameToDelete.add(event.getLogPath());
                     fullFileNameToDelete.add(event.getShellPath());
                     this.sshExecutor.sshExecute(event.getShellPath(), fullFileNameToDelete);
+                    bufferedWriterMap.remove(entry.getKey());
                     bufferDataMap.remove(table);
                 }
             }
         }
+        checkpointState.clear();
         log.info("start delete overdue file");
     }
 
