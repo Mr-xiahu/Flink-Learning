@@ -1,8 +1,9 @@
-package cn.xhjava.flink.strea.join.redis;
+package cn.xhjava.flink.stream.main.redis;
 
 import cn.xhjava.flink.stream.pojo.Student4;
-import cn.xhjava.flink.stream.sink.funcations.HbaseSinkFunction;
+import cn.xhjava.flink.stream.sink.HbaseSink;
 import cn.xhjava.flink.stream.source.SourceTool;
+import cn.xhjava.flink.stream.transfromfunction.MyRedisProcessAllWindowFunctionMultipleThread;
 import org.apache.flink.runtime.state.filesystem.FsStateBackend;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -55,7 +56,7 @@ class MutilStreamJoin_Redis_04 {
 
         //process.printToErr();
 
-        HbaseSinkFunction sinkFunction = new HbaseSinkFunction("sink:fink_api_sink_1");
+        HbaseSink sinkFunction = new HbaseSink("sink:fink_api_sink_1");
         process.addSink(sinkFunction);
         env.execute();
 

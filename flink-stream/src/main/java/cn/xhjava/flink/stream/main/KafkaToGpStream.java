@@ -1,4 +1,4 @@
-package cn.xhjava.flink.stream;
+package cn.xhjava.flink.stream.main;
 
 import cn.xhjava.domain.OggMsg;
 import cn.xhjava.flink.stream.sink.GPCopySink;

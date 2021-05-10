@@ -1,6 +1,6 @@
-package cn.xhjava.flink.stream.sink.funcations;
+package cn.xhjava.flink.stream.sink;
 
-import cn.xhjava.flink.stream.pojo.Student4;
+import cn.xhjava.domain.Student5;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
@@ -22,14 +22,14 @@ import java.util.ArrayList;
  * @create 2021/4/20
  */
 @Slf4j
-public class HbaseSinkFunction extends RichSinkFunction<Student4> implements CheckpointedFunction {
+public class HbaseSink2 extends RichSinkFunction<Student5> implements CheckpointedFunction {
     private org.apache.hadoop.conf.Configuration configuration = null;
     private Connection conn = null;
     private Table table = null;
     private String hbaseTableName;
     private ArrayList<Put> puts = new ArrayList<>();
 
-    public HbaseSinkFunction(String hbaseTableName) {
+    public HbaseSink2(String hbaseTableName) {
         this.hbaseTableName = hbaseTableName;
     }
 
@@ -43,7 +43,7 @@ public class HbaseSinkFunction extends RichSinkFunction<Student4> implements Che
     }
 
     @Override
-    public void invoke(Student4 value, Context context) throws Exception {
+    public void invoke(Student5 value, Context context) throws Exception {
         Put put = new Put(Bytes.toBytes(value.getId()));
         put.addColumn(Bytes.toBytes("info"), Bytes.toBytes("classs"), Bytes.toBytes(value.getClasss()));
         put.addColumn(Bytes.toBytes("info"), Bytes.toBytes("city"), Bytes.toBytes(value.getCity()));

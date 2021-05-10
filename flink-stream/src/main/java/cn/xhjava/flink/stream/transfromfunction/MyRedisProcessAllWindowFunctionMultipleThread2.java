@@ -1,6 +1,7 @@
-package cn.xhjava.flink.strea.join.redis;
+package cn.xhjava.flink.stream.transfromfunction;
 
-import cn.xhjava.flink.stream.pojo.Student5;
+import cn.xhjava.domain.Student5;
+import cn.xhjava.flink.stream.transfromfunction.thread.RedisMultipleThread2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.FunctionInitializationContext;

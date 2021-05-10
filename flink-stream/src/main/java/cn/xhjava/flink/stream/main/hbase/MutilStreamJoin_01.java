@@ -1,23 +1,26 @@
-package cn.xhjava.flink.strea.join.hbase;
+package cn.xhjava.flink.stream.main.hbase;
 
 import cn.xhjava.flink.stream.pojo.Student4;
 import cn.xhjava.flink.stream.sink.funcations.HbaseSinkFunction;
 import cn.xhjava.flink.stream.source.SourceTool;
+import cn.xhjava.flink.stream.transfromfunction.HbaseAsyncFunction;
+import org.apache.flink.streaming.api.datastream.AsyncDataStream;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.SourceFunction;
-import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
-import org.apache.flink.streaming.api.windowing.time.Time;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Xiahu
  * @create 2021/4/20
  * <p>
- * window + function
+ * 用Async I/O实现流表与维表Joinpublic
+ * 单张表关联查询
  */
 
-class MutilStreamJoin_03 {
+class MutilStreamJoin_01 {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
@@ -33,19 +36,17 @@ class MutilStreamJoin_03 {
             return new Student4(fields[0], fields[1], fields[2]);
         });
 
-        MyHbaseProcessAllWindowFunction processFunction = new MyHbaseProcessAllWindowFunction("lookup:realtime_dim_1,lookup:realtime_dim_2,lookup:realtime_dim_3," +
-                "lookup:realtime_dim_4,lookup:realtime_dim_5");
-        /* MyRedisProcessAllWindowFunction processFunction = new MyRedisProcessAllWindowFunction("lookup:realtime_dim_1");*/
 
-        DataStream<Student4> process = mapStream
-                .windowAll(TumblingProcessingTimeWindows.of(Time.seconds(10)))
-                .process(processFunction);
+        //3.流关联
+        HbaseAsyncFunction hbaseAsyncFunction = new HbaseAsyncFunction("lookup:realtime_dim_1");
+        DataStream<Student4> resultStream = AsyncDataStream.orderedWait(mapStream, hbaseAsyncFunction, 500, TimeUnit.MILLISECONDS, 1000);
 
+        //resultStream.printToErr();
 
-        //process.printToErr();
 
         HbaseSinkFunction sinkFunction = new HbaseSinkFunction("sink:fink_api_sink_1");
-        process.addSink(sinkFunction);
+        resultStream.addSink(sinkFunction);
+
         env.execute();
 
 

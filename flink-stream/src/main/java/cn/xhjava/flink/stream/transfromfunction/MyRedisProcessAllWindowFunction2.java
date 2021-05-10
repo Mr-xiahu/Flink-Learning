@@ -1,6 +1,6 @@
-package cn.xhjava.flink.strea.join.redis;
+package cn.xhjava.flink.stream.transfromfunction;
 
-import cn.xhjava.flink.stream.pojo.Student5;
+import cn.xhjava.domain.Student5;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
@@ -20,7 +20,7 @@ import java.util.*;
  * @author Xiahu
  * @create 2021/4/21
  *
- * 处理时间 + 单线程
+ * 处理时间 + 单线程 + 时间戳(keyBy() 后处理)
  */
 @Slf4j
 public class MyRedisProcessAllWindowFunction2 extends ProcessAllWindowFunction<Student5, Student5, TimeWindow> implements CheckpointedFunction {
@@ -28,8 +28,6 @@ public class MyRedisProcessAllWindowFunction2 extends ProcessAllWindowFunction<S
     private String hbaseTableName;
 
     private LinkedHashSet<String> tableList = new LinkedHashSet<>();
-
-//    private Map<String, Map<String, String>> cache = new HashMap<>();
 
 
     public MyRedisProcessAllWindowFunction2(String hbaseTableName) {

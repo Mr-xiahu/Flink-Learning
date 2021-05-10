@@ -1,6 +1,6 @@
-package cn.xhjava.flink.stream.sink.funcations;
+package cn.xhjava.flink.stream.sink;
 
-import cn.xhjava.flink.stream.pojo.Student5;
+import cn.xhjava.domain.Student5;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
 import org.apache.flink.runtime.state.FunctionSnapshotContext;
@@ -16,13 +16,13 @@ import java.text.SimpleDateFormat;
  * @author Xiahu
  * @create 2021/4/26
  */
-public class FileSinkFunction extends RichSinkFunction<Student5> implements CheckpointedFunction {
+public class FileSink extends RichSinkFunction<Student5> implements CheckpointedFunction {
     private BufferedWriter bufferedWriter;
     private SimpleDateFormat simpleDateFormat;
     private String sinkFilePath;
 
 
-    public FileSinkFunction(String sinkFilePath) {
+    public FileSink(String sinkFilePath) {
         this.sinkFilePath = sinkFilePath;
     }
 

@@ -1,8 +1,9 @@
-package cn.xhjava.flink.strea.join.hbase;
+package cn.xhjava.flink.stream.main.hbase;
 
 import cn.xhjava.flink.stream.pojo.Student4;
 import cn.xhjava.flink.stream.sink.funcations.HbaseSinkFunction;
 import cn.xhjava.flink.stream.source.SourceTool;
+import cn.xhjava.flink.stream.transfromfunction.HbaseAsyncFunction;
 import org.apache.flink.streaming.api.datastream.AsyncDataStream;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;

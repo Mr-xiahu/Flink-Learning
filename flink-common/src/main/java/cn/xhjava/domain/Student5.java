@@ -1,4 +1,4 @@
-package cn.xhjava.flink.stream.pojo;
+package cn.xhjava.domain;
 
 
 import java.io.Serializable;

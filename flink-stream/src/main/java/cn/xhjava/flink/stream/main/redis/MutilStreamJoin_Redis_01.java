@@ -1,9 +1,9 @@
-package cn.xhjava.flink.strea.join.redis;
+package cn.xhjava.flink.stream.main.redis;
 
 import cn.xhjava.flink.stream.pojo.Student4;
-import cn.xhjava.flink.stream.sink.funcations.HbaseSinkFunction;
+import cn.xhjava.flink.stream.sink.HbaseSink;
 import cn.xhjava.flink.stream.source.SourceTool;
-import org.apache.flink.api.java.functions.KeySelector;
+import cn.xhjava.flink.stream.transfromfunction.MyRedisProcessAllWindowFunction;
 import org.apache.flink.runtime.state.filesystem.FsStateBackend;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -16,10 +16,9 @@ import org.apache.flink.streaming.api.windowing.time.Time;
  * @author Xiahu
  * @create 2021/4/20
  * <p>
- * TumblingProcessingTimeWindows + function + redis + keyby
+ * TumblingProcessingTimeWindows + function + redis
  */
-
-class MutilStreamJoin_Redis_02 {
+class MutilStreamJoin_Redis_01 {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
@@ -35,31 +34,38 @@ class MutilStreamJoin_Redis_02 {
         DataStream<Student4> mapStream = dataStream.map(line -> {
             String[] fields = line.split(",");
             Student4 student4 = new Student4(fields[0], fields[1], fields[2]);
-            if (Integer.valueOf(student4.getId()) % 2 == 0) {
+            /*if (Integer.valueOf(student4.getId()) % 2 == 0) {
                 student4.setId("1");
             } else {
                 student4.setId("2");
-            }
+            }*/
             return student4;
         });
 
-        MyRedisProcessAllWindowFunction processFunction = new MyRedisProcessAllWindowFunction("redis_test_1,redis_test_2,redis_test_3,redis_test_4,redis_test_5");
+        MyRedisProcessAllWindowFunction processFunction = new MyRedisProcessAllWindowFunction(
+                "redis_test_1," +
+                        "redis_test_2," +
+                        "redis_test_3," +
+                        "redis_test_4," +
+                        "redis_test_5," +
+                        "redis_test_6," +
+                        "redis_test_7,redis_test_8,redis_test_9,redis_test_10,redis_test_11,redis_test_12," +
+                        "redis_test_13,redis_test_14,redis_test_15,redis_test_16,redis_test_17,redis_test_18,redis_test_19,redis_test_20," +
+                        "redis_test_21,redis_test_22,redis_test_23,redis_test_24,redis_test_25,redis_test_26,redis_test_27,redis_test_28," +
+                        "redis_test_29,redis_test_30,redis_test_31,redis_test_32,redis_test_33,redis_test_34,redis_test_35,redis_test_36,redis_test_37," +
+                        "redis_test_38,redis_test_39,redis_test_40,redis_test_41,redis_test_42,redis_test_43,redis_test_44,redis_test_45");
 
         DataStream<Student4> process = mapStream
-                .keyBy(new KeySelector<Student4, Object>() {
-                    @Override
-                    public Object getKey(Student4 value) throws Exception {
-                        return value.getId();
-                    }
-                })
                 .windowAll(TumblingProcessingTimeWindows.of(Time.seconds(10)))
                 .process(processFunction);
+        //
 
 
         //process.printToErr();
 
-        HbaseSinkFunction sinkFunction = new HbaseSinkFunction("sink:fink_api_sink_1");
+        HbaseSink sinkFunction = new HbaseSink("sink:fink_api_sink_1");
         process.addSink(sinkFunction);
+        System.out.println(env.getExecutionPlan());
         env.execute();
 
 

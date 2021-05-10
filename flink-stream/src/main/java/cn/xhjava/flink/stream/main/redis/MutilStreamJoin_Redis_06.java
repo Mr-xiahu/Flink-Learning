@@ -1,8 +1,9 @@
-package cn.xhjava.flink.strea.join.redis;
+package cn.xhjava.flink.stream.main.redis;
 
-import cn.xhjava.flink.stream.pojo.Student5;
-import cn.xhjava.flink.stream.sink.funcations.FileSinkFunction;
+import cn.xhjava.domain.Student5;
+import cn.xhjava.flink.stream.sink.FileSink;
 import cn.xhjava.flink.stream.source.SourceTool;
+import cn.xhjava.flink.stream.transfromfunction.MyRedisProcessAllWindowFunction2;
 import org.apache.flink.runtime.state.filesystem.FsStateBackend;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -56,13 +57,13 @@ class MutilStreamJoin_Redis_06 {
                 .windowAll(TumblingEventTimeWindows.of(Time.seconds(10)))
                 .process(processFunction);
 
-        FileSinkFunction fileSinkFunction = new FileSinkFunction("D:\\code\\github\\Flink-Learning\\flink-stream\\src\\main\\resources\\sink.txt");
+        FileSink fileSinkFunction = new FileSink("D:\\code\\github\\Flink-Learning\\flink-stream\\src\\main\\resources\\sink.txt");
         process.addSink(fileSinkFunction);
 
         //process.printToErr();
 
         /*
-        HbaseSinkFunction2 sinkFunction = new HbaseSinkFunction2("sink:fink_api_sink_1");
+        HbaseSink2 sinkFunction = new HbaseSink2("sink:fink_api_sink_1");
         process.addSink(sinkFunction);*/
         env.execute();
 

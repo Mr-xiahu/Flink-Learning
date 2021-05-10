@@ -1,4 +1,4 @@
-package cn.xhjava.flink.strea.join.hbase;
+package cn.xhjava.flink.stream.main.hbase;
 
 import cn.xhjava.flink.stream.pojo.Student4;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +22,8 @@ import java.util.*;
 /**
  * @author Xiahu
  * @create 2021/4/21
+ *
+ * window 批量与Hbase进行流关联查询
  */
 @Slf4j
 public class MyHbaseProcessAllWindowFunction extends ProcessAllWindowFunction<Student4, Student4, TimeWindow> implements CheckpointedFunction {

@@ -1,4 +1,4 @@
-package cn.xhjava.flink.strea.join.hbase;
+package cn.xhjava.flink.stream.transfromfunction;
 
 import cn.xhjava.flink.stream.pojo.Student4;
 import com.google.common.cache.Cache;
@@ -26,6 +26,8 @@ import java.util.Map;
 /**
  * @author Xiahu
  * @create 2021/4/20
+ *
+ * 实时流 异步关联hbase
  */
 @Slf4j
 public class HbaseAsyncFunction extends RichAsyncFunction<Student4, Student4> implements CheckpointedFunction {
