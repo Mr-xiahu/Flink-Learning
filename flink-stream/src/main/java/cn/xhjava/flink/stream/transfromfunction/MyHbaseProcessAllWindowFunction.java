@@ -1,4 +1,4 @@
-package cn.xhjava.flink.stream.main.hbase;
+package cn.xhjava.flink.stream.transfromfunction;
 
 import cn.xhjava.flink.stream.pojo.Student4;
 import lombok.extern.slf4j.Slf4j;

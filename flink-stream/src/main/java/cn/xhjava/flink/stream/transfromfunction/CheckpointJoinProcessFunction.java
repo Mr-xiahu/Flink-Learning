@@ -8,8 +8,7 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.FunctionInitializationContext;
 import org.apache.flink.runtime.state.FunctionSnapshotContext;
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
-import org.apache.flink.streaming.api.functions.windowing.ProcessAllWindowFunction;
-import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.util.Collector;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
@@ -20,22 +19,20 @@ import java.util.*;
 
 /**
  * @author Xiahu
- * @create 2021/4/21
- * <p>
- * 处理时间 + 单线程
+ * @create 2021/5/10
  */
 @Slf4j
-public class MyRedisProcessAllWindowFunction extends ProcessAllWindowFunction<Student4, Student4, TimeWindow> implements CheckpointedFunction {
+public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Student4> implements CheckpointedFunction {
+
     private Jedis jedis;
     private String hbaseTableName;
 
     private LinkedHashSet<String> tableList = new LinkedHashSet<>();
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private ListState<Student4> checkpointState;
+    private Collector<Student4> out;
 
-//    private Map<String, Map<String, String>> cache = new HashMap<>();
-
-
-    public MyRedisProcessAllWindowFunction(String hbaseTableName) {
+    public CheckpointJoinProcessFunction(String hbaseTableName) {
         this.hbaseTableName = hbaseTableName;
     }
 
@@ -48,28 +45,51 @@ public class MyRedisProcessAllWindowFunction extends ProcessAllWindowFunction<St
         }
     }
 
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    List<Student4> sourceData;
+    List<Student4> tmpJoinData = new ArrayList<>();
+
+    //LinkedList<String> keyList = new LinkedList<>();
 
 
     @Override
-    public void process(Context context, Iterable<Student4> elements, Collector<Student4> out) throws Exception {
-
-        List<Student4> sourceData = new ArrayList<>();
-        List<Student4> tmpJoinData = new ArrayList<>();
-
-        //1.遍历迭代器,获取关联键
-        Iterator<Student4> iterator = elements.iterator();
-        while (iterator.hasNext()) {
-            sourceData.add(iterator.next());
+    public void processElement(Student4 value, Context ctx, Collector<Student4> out) throws Exception {
+        this.out = out;
+        synchronized (this) {
+            checkpointState.add(value);
         }
 
-        log.info("开始批量处理: {}  count: {}", sdf.format(new Date()), sourceData.size());
+        //log.info("开始批量处理: {}  count: {}", sdf.format(new Date()), sourceData.size());
 
-        LinkedList<String> keyList = new LinkedList<>();
-        join(sourceData, tmpJoinData, keyList, out);
 
     }
 
+
+    @Override
+    public void snapshotState(FunctionSnapshotContext context) throws Exception {
+        synchronized (this) {
+            Iterator<Student4> iterator = checkpointState.get().iterator();
+            sourceData = new ArrayList<>();
+            while (iterator.hasNext()) {
+                sourceData.add(iterator.next());
+            }
+            log.info("sourceData: {}", sourceData.size());
+            join(sourceData, tmpJoinData);
+            checkpointState.clear();
+            sourceData.clear();
+        }
+    }
+
+    @Override
+    public void initializeState(FunctionInitializationContext context) throws Exception {
+        jedis = new Jedis("node2");
+        this.checkpointState = context.getOperatorStateStore().getListState(new ListStateDescriptor<Student4>("my-state", Student4.class));
+    }
+
+
+    @Override
+    public void close() throws Exception {
+        super.close();
+    }
 
     public Map<String, Map<String, String>> getRedisData(LinkedList<String> keyList) throws IOException {
         Map<String, Map<String, String>> cacheMap = new HashMap<>();
@@ -97,7 +117,8 @@ public class MyRedisProcessAllWindowFunction extends ProcessAllWindowFunction<St
         return cacheMap;
     }
 
-    private void join(List<Student4> sourceData, List<Student4> tmpJoinData, LinkedList<String> keyList, Collector<Student4> out) throws IOException {
+    private void join(List<Student4> sourceData, List<Student4> tmpJoinData) throws IOException {
+        LinkedList<String> keyList = new LinkedList<>();
         long start = System.currentTimeMillis();
         //join查询
         for (String table : tableList) {
@@ -173,26 +194,4 @@ public class MyRedisProcessAllWindowFunction extends ProcessAllWindowFunction<St
         sourceData.clear();
         tmpJoinData.clear();
     }
-
-
-    @Override
-    public void close() throws Exception {
-        super.close();
-        tableList.clear();
-        jedis.close();
-
-
-    }
-
-    @Override
-    public void snapshotState(FunctionSnapshotContext context) throws Exception {
-    }
-
-    @Override
-    public void initializeState(FunctionInitializationContext context) throws Exception {
-        log.info("running initializeState");
-        this.jedis = new Jedis("node2");
-        this.checkpointState = context.getOperatorStateStore().getListState(new ListStateDescriptor<Student4>("my-state", Student4.class));
-    }
 }
-

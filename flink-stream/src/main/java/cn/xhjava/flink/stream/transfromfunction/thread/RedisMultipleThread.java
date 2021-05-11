@@ -137,7 +137,7 @@ public class RedisMultipleThread implements Runnable {
                 cacheMap.put(keyList.removeFirst(), map);
             }
         }
-        pipeline.close();
+//        pipeline.close();
         return cacheMap;
     }
 }

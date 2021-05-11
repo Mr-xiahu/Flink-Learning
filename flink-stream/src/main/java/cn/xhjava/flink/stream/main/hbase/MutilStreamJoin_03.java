@@ -1,8 +1,9 @@
 package cn.xhjava.flink.stream.main.hbase;
 
 import cn.xhjava.flink.stream.pojo.Student4;
-import cn.xhjava.flink.stream.sink.funcations.HbaseSinkFunction;
+import cn.xhjava.flink.stream.sink.HbaseSink;
 import cn.xhjava.flink.stream.source.SourceTool;
+import cn.xhjava.flink.stream.transfromfunction.MyHbaseProcessAllWindowFunction;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -44,7 +45,7 @@ class MutilStreamJoin_03 {
 
         //process.printToErr();
 
-        HbaseSinkFunction sinkFunction = new HbaseSinkFunction("sink:fink_api_sink_1");
+        HbaseSink sinkFunction = new HbaseSink("sink:fink_api_sink_1");
         process.addSink(sinkFunction);
         env.execute();
 

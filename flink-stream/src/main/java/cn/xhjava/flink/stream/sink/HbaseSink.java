@@ -64,7 +64,7 @@ public class HbaseSink extends RichSinkFunction<Student4> implements Checkpointe
 
     @Override
     public void snapshotState(FunctionSnapshotContext context) throws Exception {
-        log.info("执行Checkpoint,同步快照");
+        //log.info("执行Checkpoint,同步快照");
         if (puts.size() > 0) {
             table.put(puts);
             puts.clear();
@@ -73,6 +73,6 @@ public class HbaseSink extends RichSinkFunction<Student4> implements Checkpointe
 
     @Override
     public void initializeState(FunctionInitializationContext context) throws Exception {
-        log.info("初始化状态!");
+        //log.info("初始化状态!");
     }
 }
