@@ -1,10 +1,10 @@
 package cn.xhjava.util;
 
 
-import org.apache.flink.table.shaded.org.joda.time.DateTime;
-import org.apache.flink.table.shaded.org.joda.time.DateTimeZone;
-import org.apache.flink.table.shaded.org.joda.time.format.DateTimeFormat;
-import org.apache.flink.table.shaded.org.joda.time.format.DateTimeFormatter;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -17,7 +17,7 @@ public class SourceTool {
     public static SourceFunction<String> getKafkaSource(String topic) {
         Properties prop = new Properties();
         prop.setProperty("bootstrap.servers", "192.168.0.113:9092");
-        prop.setProperty("group.id", "flink_kafka");
+        prop.setProperty("group.id", "kafka_join_hbase");
         //prop.setProperty("auto.offset.reset", "earliest");
         SourceFunction<String> kafkaSource = new FlinkKafkaConsumer<>(topic, new SimpleStringSchema(), prop);
         return kafkaSource;

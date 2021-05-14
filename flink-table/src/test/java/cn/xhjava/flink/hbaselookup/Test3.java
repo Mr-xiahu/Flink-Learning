@@ -1,7 +1,7 @@
 package cn.xhjava.flink.hbaselookup;
 
 import cn.xhjava.domain.Student4;
-import cn.xhjava.util.HbaseFamilyParse;
+import cn.xhjava.flink.table.util.HbaseFamilyParse;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.connector.hbase.source.HBaseLookupFunction;
 import org.apache.flink.connector.hbase.util.HBaseTableSchema;
@@ -10,7 +10,6 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.types.Row;
 import org.apache.hadoop.conf.Configuration;
 
 import java.text.SimpleDateFormat;

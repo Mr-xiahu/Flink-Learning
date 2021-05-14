@@ -64,18 +64,20 @@ public class RedisClusterSink extends RichSinkFunction<OggMsg> implements Checkp
     public void snapshotState(FunctionSnapshotContext context) throws Exception {
         long startTime = System.currentTimeMillis();
         int count = bufferData.size();
-        synchronized (this) {
-            Iterator<Map.Entry<String, String>> iterator = bufferData.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, String> entry = iterator.next();
-                String key = entry.getKey();
-                String value = bufferData.remove(key);
-                pipelined.set(key, value);
+        if (count > 0) {
+            synchronized (this) {
+                Iterator<Map.Entry<String, String>> iterator = bufferData.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, String> entry = iterator.next();
+                    String key = entry.getKey();
+                    String value = bufferData.remove(key);
+                    pipelined.set(key, value);
+                }
+                pipelined.sync();
             }
-            pipelined.sync();
+            long endTime = System.currentTimeMillis();
+            log.info("批量写入Redis数据: {} , 耗费时间: {} s", count, (endTime - startTime) / 1000.0);
         }
-        long endTime = System.currentTimeMillis();
-        log.info("批量写入Redis数据: {} , 耗费时间: {} s", count, (endTime - startTime) / 1000.0);
         checkPointState.clear();
     }
 

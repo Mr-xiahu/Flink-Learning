@@ -5,7 +5,7 @@ import cn.xhjava.util.MysqlUtil;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
-import scala.xml.MetaData;
+import org.eclipse.jetty.http.MetaData;
 
 import java.util.List;
 

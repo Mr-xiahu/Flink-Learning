@@ -2,7 +2,7 @@ package cn.xhjava.schema;
 
 import cn.xhjava.domain.OggMsg;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 
@@ -13,15 +13,21 @@ import java.nio.charset.StandardCharsets;
  * @author Xiahu
  * @create 2020/11/26
  */
+@Slf4j
 public class OggMsgSchema implements DeserializationSchema<OggMsg> {
 
 
     //这里返回一个OggMsg类型的数据
     @Override
     public OggMsg deserialize(byte[] message) throws IOException {
-
+        OggMsg result = null;
         String msg = new String(message, StandardCharsets.UTF_8);
-        OggMsg result = JSONObject.parseObject(msg, OggMsg.class);
+        try {
+            result = JSONObject.parseObject(msg, OggMsg.class);
+
+        } catch (Exception e) {
+            log.warn("存在脏数据 {}", msg);
+        }
         return result;
     }
 

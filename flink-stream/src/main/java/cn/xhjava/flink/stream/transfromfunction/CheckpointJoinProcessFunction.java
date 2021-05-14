@@ -1,6 +1,8 @@
 package cn.xhjava.flink.stream.transfromfunction;
 
 import cn.xhjava.flink.stream.pojo.Student4;
+import cn.xhjava.redis.JedisClusterPipeline;
+import cn.xhjava.redis.RedisClusterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.state.ListState;
 import org.apache.flink.api.common.state.ListStateDescriptor;
@@ -10,8 +12,6 @@ import org.apache.flink.runtime.state.FunctionSnapshotContext;
 import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.util.Collector;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,7 +24,7 @@ import java.util.*;
 @Slf4j
 public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Student4> implements CheckpointedFunction {
 
-    private Jedis jedis;
+    private JedisClusterPipeline pipeline;
     private String hbaseTableName;
 
     private LinkedHashSet<String> tableList = new LinkedHashSet<>();
@@ -57,10 +57,6 @@ public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Stu
         synchronized (this) {
             checkpointState.add(value);
         }
-
-        //log.info("开始批量处理: {}  count: {}", sdf.format(new Date()), sourceData.size());
-
-
     }
 
 
@@ -71,17 +67,19 @@ public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Stu
             sourceData = new ArrayList<>();
             while (iterator.hasNext()) {
                 sourceData.add(iterator.next());
+                if (sourceData.size() >= 10000) {
+                    log.info("sourceData count: {}", sourceData.size());
+                    join(sourceData, tmpJoinData);
+                    sourceData.clear();
+                }
             }
-            log.info("sourceData: {}", sourceData.size());
-            join(sourceData, tmpJoinData);
             checkpointState.clear();
-            sourceData.clear();
         }
     }
 
     @Override
     public void initializeState(FunctionInitializationContext context) throws Exception {
-        jedis = new Jedis("node2");
+        pipeline = JedisClusterPipeline.pipelined(RedisClusterUtils.getJedisCluster());
         this.checkpointState = context.getOperatorStateStore().getListState(new ListStateDescriptor<Student4>("my-state", Student4.class));
     }
 
@@ -89,11 +87,11 @@ public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Stu
     @Override
     public void close() throws Exception {
         super.close();
+        pipeline.close();
     }
 
     public Map<String, Map<String, String>> getRedisData(LinkedList<String> keyList) throws IOException {
         Map<String, Map<String, String>> cacheMap = new HashMap<>();
-        Pipeline pipeline = jedis.pipelined();
         for (String key : keyList) {
             pipeline.get(key);
         }
@@ -107,15 +105,16 @@ public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Stu
 
                 for (String str : fields) {
                     String[] split = str.split(":");
-                    map.put("info:" + split[0], split[1]);
+                    map.put(split[0], split[1]);
                 }
-                cacheMap.put(keyList.removeFirst(), map);
+                String key = keyList.removeFirst();
+                map.put("table_name", key);
+                cacheMap.put(key, map);
             }
         }
-        pipeline.close();
-
         return cacheMap;
     }
+    private StringBuffer sb = new StringBuffer();
 
     private void join(List<Student4> sourceData, List<Student4> tmpJoinData) throws IOException {
         LinkedList<String> keyList = new LinkedList<>();
@@ -129,14 +128,17 @@ public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Stu
                     keyList.add(key);
                 }
 
+                long start1 = System.currentTimeMillis();
                 Map<String, Map<String, String>> redisData = getRedisData(keyList);
+                long end1 = System.currentTimeMillis();
+                sb.append((end1 - start1) / 1000.0 + " s").append("  ");
 
                 //再次遍历剩余的SourceData,join上一批次没有关联的数据
                 for (Student4 student : sourceData) {
                     String key = table + "_" + student.getId();
                     if (redisData.containsKey(key)) {
                         Map<String, String> dataMap = redisData.get(key);
-                        student.setCity(dataMap.get("info:name"));
+                        student.setCity(dataMap.get("table_name"));
                         tmpJoinData.add(student);
                     } else {
                         //如果还是没找到,则表示Hbase内不存在关联数据
@@ -155,7 +157,10 @@ public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Stu
                     keyList.add(key);
                 }
 
+                long start1 = System.currentTimeMillis();
                 Map<String, Map<String, String>> redisData = getRedisData(keyList);
+                long end1 = System.currentTimeMillis();
+                sb.append((end1 - start1) / 1000.0 + " s").append("  ");
 
 
                 //再次遍历剩余的SourceData,join上一批次没有关联的数据
@@ -163,7 +168,7 @@ public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Stu
                     String key = table + "_" + student.getId();
                     if (redisData.containsKey(key)) {
                         Map<String, String> dataMap = redisData.get(key);
-                        student.setCity(dataMap.get("info:name"));
+                        student.setCity(dataMap.get("table_name"));
                         sourceData.add(student);
                     } else {
                         sourceData.add(student);
@@ -189,8 +194,9 @@ public class CheckpointJoinProcessFunction extends ProcessFunction<Student4, Stu
         }
         long end = System.currentTimeMillis();
         long speed = end - start;
-        log.info("当前批次数据量为: {},消耗时间: {} s", count, (speed / 1000.0));
-
+        log.info("Current Data Count : {} , Time: {} s ", count, (speed / 1000.0));
+        log.info(" Request Redis Time: {}", sb.toString());
+        sb = new StringBuffer();
         sourceData.clear();
         tmpJoinData.clear();
     }

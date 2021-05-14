@@ -1,7 +1,7 @@
 package cn.xhjava.flink.hbaselookup;
 
 import cn.xhjava.domain.Student4;
-import cn.xhjava.util.HbaseFamilyParse;
+import cn.xhjava.flink.table.util.HbaseFamilyParse;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.connector.hbase.source.HBaseLookupFunction;
 import org.apache.flink.connector.hbase.util.HBaseTableSchema;
