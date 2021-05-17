@@ -4,7 +4,7 @@ package cn.xhjava.userBehaviorAnalysis.domain;
 import lombok.Data;
 
 /**
- * 商品排行
+ * 商品页面
  */
 @Data
 public class ItemViewCount {
