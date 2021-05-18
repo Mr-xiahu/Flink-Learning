@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 public class HotPagesStream {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
         env.setParallelism(1);
 
         // 读取文件，转换成POJO
