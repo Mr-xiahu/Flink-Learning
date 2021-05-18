@@ -25,7 +25,7 @@ public class FlinkTable_02_HbaseLookupFuncation2 {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
         env.setParallelism(1);
-        DataStreamSource<String> sourceStream = env.readTextFile("D:\\git\\study\\Flink-Learning\\flink-table\\src\\main\\resources\\student");
+        DataStreamSource<String> sourceStream = env.readTextFile("D:\\code\\github\\Flink-Learning\\flink-table\\src\\main\\resources\\student");
 //        DataStreamSource<String> sourceStream = env.socketTextStream("192.168.0.113", 8889);
         DataStream<Student3> map = sourceStream.map(new MapFunction<String, Student3>() {
             @Override

@@ -39,10 +39,10 @@ public class MutilStreamJoin_02 {
 
         //3.流关联
         HbaseAsyncFunction hbaseAsyncFunction1 = new HbaseAsyncFunction("lookup:realtime_dim_1");
-        HbaseAsyncFunction hbaseAsyncFunction2 = new HbaseAsyncFunction("lookup:realtime_dim_2");
+        /*HbaseAsyncFunction hbaseAsyncFunction2 = new HbaseAsyncFunction("lookup:realtime_dim_2");
         HbaseAsyncFunction hbaseAsyncFunction3 = new HbaseAsyncFunction("lookup:realtime_dim_3");
         HbaseAsyncFunction hbaseAsyncFunction4 = new HbaseAsyncFunction("lookup:realtime_dim_4");
-        /*HbaseAsyncFunction hbaseAsyncFunction5 = new HbaseAsyncFunction("lookup:realtime_dim_5");
+        HbaseAsyncFunction hbaseAsyncFunction5 = new HbaseAsyncFunction("lookup:realtime_dim_5");
         HbaseAsyncFunction hbaseAsyncFunction6 = new HbaseAsyncFunction("lookup:realtime_dim_6");
         HbaseAsyncFunction hbaseAsyncFunction7 = new HbaseAsyncFunction("lookup:realtime_dim_7");
         HbaseAsyncFunction hbaseAsyncFunction8 = new HbaseAsyncFunction("lookup:realtime_dim_8");
@@ -85,10 +85,10 @@ public class MutilStreamJoin_02 {
         HbaseAsyncFunction hbaseAsyncFunction45 = new HbaseAsyncFunction("lookup:realtime_dim_45");*/
 
         DataStream<Student4> resultStream1 = AsyncDataStream.orderedWait(mapStream, hbaseAsyncFunction1, 500, TimeUnit.MILLISECONDS, 1000);
-        DataStream<Student4> resultStream2 = AsyncDataStream.orderedWait(resultStream1, hbaseAsyncFunction2, 500, TimeUnit.MILLISECONDS, 1000);
+        /*DataStream<Student4> resultStream2 = AsyncDataStream.orderedWait(resultStream1, hbaseAsyncFunction2, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream3 = AsyncDataStream.orderedWait(resultStream2, hbaseAsyncFunction3, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream4 = AsyncDataStream.orderedWait(resultStream3, hbaseAsyncFunction4, 500, TimeUnit.MILLISECONDS, 1000);
-        /*DataStream<Student4> resultStream5 = AsyncDataStream.orderedWait(resultStream4, hbaseAsyncFunction5, 500, TimeUnit.MILLISECONDS, 1000);
+        DataStream<Student4> resultStream5 = AsyncDataStream.orderedWait(resultStream4, hbaseAsyncFunction5, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream6 = AsyncDataStream.orderedWait(resultStream5, hbaseAsyncFunction6, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream7 = AsyncDataStream.orderedWait(resultStream6, hbaseAsyncFunction7, 500, TimeUnit.MILLISECONDS, 1000);
         DataStream<Student4> resultStream8 = AsyncDataStream.orderedWait(resultStream7, hbaseAsyncFunction8, 500, TimeUnit.MILLISECONDS, 1000);
@@ -133,7 +133,7 @@ public class MutilStreamJoin_02 {
 
 
         HbaseSink sinkFunction = new HbaseSink("sink:fink_api_sink_1");
-        resultStream4.addSink(sinkFunction);
+        resultStream1.addSink(sinkFunction);
 
         env.execute();
 

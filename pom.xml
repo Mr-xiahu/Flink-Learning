@@ -25,6 +25,7 @@
         <java.version>1.8</java.version>
         <hadoop.version>3.0.0</hadoop.version>
         <scala.binary.version>2.11</scala.binary.version>
+        <vert.version>4.0.3</vert.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
