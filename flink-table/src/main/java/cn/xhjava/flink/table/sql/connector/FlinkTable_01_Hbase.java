@@ -3,7 +3,6 @@ package cn.xhjava.flink.table.sql.connector;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-import org.apache.flink.types.Row;
 
 /**
  * @author Xiahu
@@ -32,10 +31,10 @@ public class FlinkTable_01_Hbase {
         //插入数据
         /*tableEnv.executeSql("INSERT INTO hbase_user_behavior\n" +
                 "SELECT '2000000000', ROW('2', '2', '2') as info");*/
-
         Table query = tableEnv.sqlQuery("select rowkey from hbase_user_behavior limit 10");
 
-        tableEnv.toAppendStream(query, Row.class).print();
+
+        /*tableEnv.toAppendStream(query, Row.class).print();*/
 
         //env.execute();
 
