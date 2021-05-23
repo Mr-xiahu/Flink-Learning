@@ -25,6 +25,7 @@ import java.util.Iterator;
 
 /**
  * 登陆异常检测
+ * 如果一个用户短时间内频繁登录失败，就有可能是出现了程序的恶意攻击
  */
 public class LoginFail {
     public static void main(String[] args) throws Exception{

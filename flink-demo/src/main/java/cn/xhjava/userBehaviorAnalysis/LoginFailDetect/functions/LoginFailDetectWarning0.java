@@ -17,7 +17,10 @@ import java.util.ArrayList;
 /**
  * @author XiaHu
  * @create 2021/5/23
- * 实现自定义KeyedProcessFunction
+ * LoginFailDetectWarning V-1.0 使用定时器触发报警机制
+ * 遇到登录失败的事件时将其保存在 ListState 中，然后设置一个定时器，2 秒后触发。
+ * 定时器触发时检查状态中的登录失败事件个数，如果大于等于 2，那么就输出报警信息
+ *
  */
 public class LoginFailDetectWarning0 extends KeyedProcessFunction<Long, LoginEvent, LoginFailWarning> {
     // 定义属性，最大连续登录失败次数

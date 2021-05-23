@@ -21,6 +21,7 @@ import java.util.Map;
 
 /**
  * 使用Flink CEP 检测登陆异常
+ * CEP（Complex Event Processing，复杂事件处理）库，用于在流中筛选符合某种复杂模式的事件
  */
 public class LoginFailWithCep {
     public static void main(String[] args) throws Exception {

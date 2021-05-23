@@ -15,6 +15,9 @@ import java.util.Iterator;
  * @author XiaHu
  * @create 2021/5/23
  * 登陆失败检测警告处理函数
+ * LoginFailDetectWarning V-2.0 使用Flink 状态机制
+ * 不用定时器触发，直接在状态中存取上一次登录失败的事件，每次都做判断和比对
+ *
  */
 public class LoginFailDetectWarning extends KeyedProcessFunction<Long, LoginEvent, LoginFailWarning> {
     // 定义属性，最大连续登录失败次数

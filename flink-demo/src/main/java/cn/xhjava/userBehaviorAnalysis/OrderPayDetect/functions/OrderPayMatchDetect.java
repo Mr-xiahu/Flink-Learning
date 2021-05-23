@@ -13,6 +13,10 @@ import org.apache.flink.util.OutputTag;
 /**
  * @author XiaHu
  * @create 2021/5/23
+ *  在订单的 create 事件到来后注册定时器，15 分钟后触发；
+ *  然后再用一个布尔类型的 Value 状态来作为标识位，表明 pay 事件是否发生过。
+ *  如果 pay 事件已经发生，状态被置为 true，那么就不再需要做什么操作；
+ *  如果 pay 事件一直没来，状态一直为 false，到定时器触发时，就应该输出超时报警信息
  */
 public class OrderPayMatchDetect extends KeyedProcessFunction<Long, OrderEvent, OrderResult> {
 

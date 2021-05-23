@@ -47,6 +47,7 @@ public class AdStatisticsByProvinceStream {
                 })*/
                 // 基于用户id和广告id做分组
                 .keyBy("userId","adId")
+                //黑名单过滤
                 .process(new FilterBlackListUser(100));
 
 

@@ -14,8 +14,9 @@ import org.apache.flink.util.OutputTag;
 
 /**
  * 订单支付超时
+ * 在 pay 事件超时未发生的情况下，输出超时报警信息
  */
-public class OrderTimeoutStream {
+public class OrderPayTimeoutStream {
     // 定义超时事件的侧输出流标签
     private final static OutputTag<OrderResult> orderTimeoutTag = new OutputTag<OrderResult>("order-timeout"){};
 
