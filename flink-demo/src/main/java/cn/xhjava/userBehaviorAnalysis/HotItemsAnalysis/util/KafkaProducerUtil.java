@@ -1,4 +1,4 @@
-package cn.xhjava.userBehaviorAnalysis.HotItemsAnalysis;
+package cn.xhjava.userBehaviorAnalysis.HotItemsAnalysis.util;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;

@@ -11,6 +11,10 @@ import redis.clients.jedis.Jedis;
 /**
  * @author Xiahu
  * @create 2021-05-18
+ * 布隆过滤器本质上是一种数据结构，比较巧妙的概率型数据结构（probabilistic data structure），
+ * 特点是高效地插入和查询，可以用来告诉你 “某样东西一定不存在或者可能存在”。
+ * 它本身是一个很长的二进制向量，既然是二进制的向量，那么显而易见的，存放的不是 0，就是 1。
+ * 相比于传统的 List、Set、Map 等数据结构，它更高效、占用空间更少，但是缺点是其返回的结果是概率性的，而不是确切的
  */
 // 实现自定义的处理函数
 public class UvCountResultWithBloomFliter extends ProcessAllWindowFunction<UserBehavior, PageViewCount, TimeWindow> {
