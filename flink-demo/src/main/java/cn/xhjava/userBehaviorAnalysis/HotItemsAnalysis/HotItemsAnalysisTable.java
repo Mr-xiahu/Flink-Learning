@@ -12,7 +12,9 @@ import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
-
+/**
+ * 基于Flink Table 实现热门商品Top N
+ */
 public class HotItemsAnalysisTable {
     public static void main(String[] args) throws Exception {
         // 1. 创建执行环境

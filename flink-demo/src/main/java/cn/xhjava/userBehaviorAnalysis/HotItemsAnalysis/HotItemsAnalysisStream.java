@@ -21,6 +21,7 @@ import java.util.Properties;
 /**
  * @author XiaHu
  * @create 2021/5/16
+ * 热门商品Top N
  */
 public class HotItemsAnalysisStream {
     public static void main(String[] args) throws Exception {

@@ -18,7 +18,7 @@ import java.util.HashSet;
 /**
  * UV
  */
-public class UniqueVisitor {
+public class UniqueVisitorStream {
     public static void main(String[] args) throws Exception {
         // 1. 创建执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
