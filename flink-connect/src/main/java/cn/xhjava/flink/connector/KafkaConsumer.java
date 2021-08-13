@@ -4,6 +4,7 @@ import cn.xhjava.flink.connector.kafka.MyFlinkKafkaConsumer;
 import cn.xhjava.flink.connector.kafka.TaskCallBack;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import org.apache.flink.streaming.connectors.kafka.internals.KafkaTopicPartition;
 
 import java.util.Iterator;
@@ -39,7 +40,10 @@ public class KafkaConsumer {
             }
         });
         kafkaSource.setCommitOffsetsOnCheckpoints(true);
-        env.addSource(kafkaSource).print();
+
+
+        FlinkKafkaProducer<String> kafkaSink = new FlinkKafkaProducer<>("", new SimpleStringSchema(), prop);
+        env.addSource(kafkaSource).addSink(kafkaSink);
         env.execute();
     }
 }
