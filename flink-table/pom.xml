@@ -19,6 +19,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.clb</groupId>
+            <artifactId>flink-sql-udf</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-planner_2.11</artifactId>
             <version>${flink.version}</version>
@@ -46,24 +51,11 @@
             <version>${flink.version}</version>
         </dependency>
 
-
-        <!-- <dependency>
-             <groupId>io.vertx</groupId>
-             <artifactId>vertx-core</artifactId>
-             <version>${vert.version}</version>
-         </dependency>
-
-         <dependency>
-             <groupId>io.vertx</groupId>
-             <artifactId>vertx-jdbc-client</artifactId>
-             <version>${vert.version}</version>
-         </dependency>
-
-         <dependency>
-             <groupId>io.vertx</groupId>
-             <artifactId>vertx-json-schema</artifactId>
-             <version>${vert.version}</version>
-         </dependency>-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-jdbc_2.11</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.lettuce/lettuce-core -->
         <dependency>
