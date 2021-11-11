@@ -30,6 +30,10 @@ public class OrderEvent {
         this.eventTime = eventTime;
     }
 
+    public OrderEvent(Long aLong, String field, String field1, Long aLong1) {
+
+    }
+
     @Override
     public String toString() {
         return "OrderEvent{" +
