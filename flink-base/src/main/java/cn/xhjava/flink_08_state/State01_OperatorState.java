@@ -17,7 +17,7 @@ import java.util.List;
  * @create 2020/11/2
  */
 public class State01_OperatorState {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
 
@@ -39,9 +39,9 @@ public class State01_OperatorState {
     }
 
 
-    // 自定义MapFunction
     public static class MyCountMapper implements MapFunction<SensorReading, Integer>, ListCheckpointed<Integer> {
         // 定义一个本地变量，作为算子状态
+        // 算子状态的作用范围限定为算子任务(也就是不能跨任务访问),只能在MyCountMapper这个算子内使用
         private Integer count = 0;
 
         @Override
@@ -57,7 +57,7 @@ public class State01_OperatorState {
 
         @Override
         public void restoreState(List<Integer> state) throws Exception {
-            for( Integer num: state )
+            for (Integer num : state)
                 count += num;
         }
     }

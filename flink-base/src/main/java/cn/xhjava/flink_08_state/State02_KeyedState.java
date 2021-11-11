@@ -15,6 +15,12 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class State02_KeyedState {
 
+    /**
+     * 键控状态是根据输入数据流中定义的键(key)来维护和访问的;(keyBy后才能使用)
+     * Flink 为每个key维护一个状态实例,并将具有相同键的所有数据,都分区到同一个算子任务中,这个任务会维护和处理这个key对应的状态.
+     * 当任务处理一条数据时，他会自动将状态的访问范围限定为当前数据的key
+     */
+
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
@@ -53,7 +59,7 @@ public class State02_KeyedState {
 
             myListState = getRuntimeContext().getListState(new ListStateDescriptor<String>("my-list", String.class));
             myMapState = getRuntimeContext().getMapState(new MapStateDescriptor<String, Double>("my-map", String.class, Double.class));
-            //myReducingState = getRuntimeContext().getReducingState(new ReducingStateDescriptor<SensorReading>("",SensorReading.class));
+            //myReducingState = getRuntimeContext().getReducingState(new ReducingStateDescriptor<SensorReading>("", SensorReading.class));
         }
 
         @Override
