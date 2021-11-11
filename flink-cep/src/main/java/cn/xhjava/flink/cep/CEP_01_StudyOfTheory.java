@@ -1,11 +1,22 @@
 package cn.xhjava.flink.cep;
 
 
+import org.apache.flink.cep.CEP;
+import org.apache.flink.cep.PatternSelectFunction;
+import org.apache.flink.cep.PatternStream;
+import org.apache.flink.cep.PatternTimeoutFunction;
 import org.apache.flink.cep.pattern.Pattern;
+import org.apache.flink.cep.pattern.Quantifier;
 import org.apache.flink.cep.pattern.conditions.SimpleCondition;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.util.OutputTag;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author XiaHu
@@ -82,7 +93,12 @@ public class CEP_01_StudyOfTheory {
          *
          *   个体模式可以包括"单例（singleton）模式"和"循环（looping）模式"
          *   单例模式只接收一个事件，而循环模式可以接收多个
-         *   个体模式---量词（Quantifier）
+         *
+         */
+
+        /**
+         *
+         *  个体模式---量词（Quantifier）
          *          可以在一个个体模式后追加量词，也就是指定循环次数
          *
          */
@@ -112,7 +128,14 @@ public class CEP_01_StudyOfTheory {
          *                 })
          *
          *          组合条件(Combining Condition)
-         *              将简单条件进行合并；.or() 方法表示或逻辑相连，where 的直接组合就是 AND
+         *              将简单条件进行合并；.or() 方法表示或逻辑相连,where 的直接组合就是 AND
+         *
+         *          终止条件(Stop Condition)
+         *              如果使用了oneOrMore()或者timesOrMore().optional(),建议使用'.until()'作为终止条件,以便于清理状态
+         *
+         *          迭代条件(Iterative Condition)
+         *              能够对之前接收的所有事件进行处理
+         *              可以调用ctx.getEventsForPattern("name").where(new IterativeCondition<Event>(){...})
          *
          */
 
@@ -128,5 +151,99 @@ public class CEP_01_StudyOfTheory {
          *          .where(new SimpleCondition<String>() {...}
          *
          */
+
+
+        /**
+         *  3.模式序列
+         *      严格近邻(Strict Contiguity)
+         *          所有事件按照严格的顺序出现,中间没有任何不匹配事件,由'next()'指定
+         *          例如对于模式' a next b',事件序列[a,c,b1,b2]没有匹配;事件序列[c,c2,b,a] -->  可以匹配
+         *
+         *      宽松近邻(Relaxed Contiguity)
+         *          允许中间出现不匹配的事件,由'.followedBy()'指定
+         *          例如对于模式'a followedBy b',事件序列[a,c,b1,b2] 匹配未：a,b1
+         *
+         *      非确定性宽松近邻(Non-Deterministic Relaxed Contiguity)
+         *          进一步放宽条件,之前已经匹配过的事件也可以再次使用,由'.followedByAndy'指定
+         *          例如对于模式'a followedByAny b',事件序列[a,c,b1,b2]匹配为:[a,b1],[a,b2]
+         *
+         *      除去以上模式序列外,还可以定义"不希望出现某种近邻关系":
+         *          .notNext() : 不想让某个事件严格紧邻前一个事件发生
+         *          .notFollowedBy() :  不想让某个事件在两个事件中发生
+         *
+         *      注意：
+         *          所有模式序列必须以 .begin() 开始
+         *          模式序列不能以 .followedBy 结束
+         *          'not' 类型的模式不能呗 optional 所修饰
+         *          可以使用 .within(Time.seconds(10)) 为模式指定时间约束,用来要求在多长时间内有效(这里表示10s的时间内有效)
+         */
+
+
+        /**
+         *  模式的检测
+         *      指定要查找的模式序列后,将其应用于输入数据流上进行检测潜在的匹配
+         *      比如：
+         */
+        Pattern<String, String> pattern = Pattern.<String>begin("start")
+                .where(new SimpleCondition<String>() {
+                    @Override
+                    public boolean filter(String value) throws Exception {
+                        if (value.equals("a")) {
+                            return true;
+                        }
+                        return false;
+                    }
+                })
+                .next("next")
+                .where(new SimpleCondition<String>() {
+                    @Override
+                    public boolean filter(String value) throws Exception {
+                        if (value.equals("b")) {
+                            return true;
+                        }
+                        return false;
+                    }
+                }).within(Time.seconds(10));
+        PatternStream<String> patternStream = CEP.pattern(stream, pattern);
+
+
+        /**
+         *  匹配事件的提取
+         *      创建PatternStream后可以使用select()或者flatSelect()方法,从检测到的事件中提取事件
+         *      select()需要输入一个select function作为参数,每个成功匹配的事件序列都会调用它
+         *
+         */
+        SingleOutputStreamOperator<String> selectStream = patternStream.select(new PatternSelectFunction<String, String>() {
+            @Override
+            public String select(Map<String, List<String>> pattern) throws Exception {
+                return pattern.get("start").get(0);
+            }
+        });
+
+
+        /**
+         *  超时事件提取
+         *    当一个模式通过within 关键字定义了检测窗口事件时,部分事件序列可能因为超过窗口长度而被丢弃,为了能够处理这些超时的部分匹配,
+         *          select 和 flatSelect API调用允许指定超时处理程序
+         *    超时处理程序会接收到目前为止由模式匹配到的所有事件,由一个OutputTag定义接收到的超时事件
+         */
+
+        OutputTag<String> timeOutTag = new OutputTag<String>("timeOut") {
+        };
+        SingleOutputStreamOperator<String> selectDS = patternStream.select(timeOutTag, new PatternTimeoutFunction<String, String>() {
+            @Override
+            public String timeout(Map<String, List<String>> pattern, long timeoutTimestamp) throws Exception {
+                return pattern.get("start").get(0);
+            }
+        }, new PatternSelectFunction<String, String>() {
+            @Override
+            public String select(Map<String, List<String>> pattern) throws Exception {
+                return pattern.get("start").get(0);
+            }
+        });
+
+        DataStream<String> timeOutStream = selectDS.getSideOutput(timeOutTag);
+
+
     }
 }
