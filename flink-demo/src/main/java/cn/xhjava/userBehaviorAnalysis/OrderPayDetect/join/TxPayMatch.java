@@ -1,4 +1,4 @@
-package cn.xhjava.userBehaviorAnalysis.OrderPayDetect;
+package cn.xhjava.userBehaviorAnalysis.OrderPayDetect.join;
 
 import cn.xhjava.userBehaviorAnalysis.OrderPayDetect.functions.TxPayMatchDetect;
 import cn.xhjava.userBehaviorAnalysis.domain.OrderEvent;
@@ -37,12 +37,14 @@ public class TxPayMatch {
                     String[] fields = line.split(",");
                     return new OrderEvent(new Long(fields[0]), fields[1], fields[2], new Long(fields[3]));
                 })
-                .assignTimestampsAndWatermarks(new AssignerWithPeriodicWatermarksAdapter.Strategy<OrderEvent>(new BoundedOutOfOrdernessTimestampExtractor<OrderEvent>(Time.seconds(0)) {
-                    @Override
-                    public long extractTimestamp(OrderEvent element) {
-                        return element.getTimestamp() * 1000L;
-                    }
-                }))
+                .assignTimestampsAndWatermarks(
+                        new AssignerWithPeriodicWatermarksAdapter.Strategy<OrderEvent>(
+                                new BoundedOutOfOrdernessTimestampExtractor<OrderEvent>(Time.seconds(0)) {
+                                    @Override
+                                    public long extractTimestamp(OrderEvent element) {
+                                        return element.getTimestamp() * 1000L;
+                                    }
+                                }))
                 // 交易id不为空，必须是pay事件
                 .filter(data -> !"".equals(data.getTxId()));
 
@@ -53,17 +55,19 @@ public class TxPayMatch {
                     String[] fields = line.split(",");
                     return new ReceiptEvent(fields[0], fields[1], new Long(fields[2]));
                 })
-                .assignTimestampsAndWatermarks(new AssignerWithPeriodicWatermarksAdapter.Strategy<ReceiptEvent>(new BoundedOutOfOrdernessTimestampExtractor<ReceiptEvent>(Time.seconds(0)) {
-                    @Override
-                    public long extractTimestamp(ReceiptEvent element) {
-                        return element.getTimestamp() * 1000L;
-                    }
-                }));
+                .assignTimestampsAndWatermarks(
+                        new AssignerWithPeriodicWatermarksAdapter.Strategy<ReceiptEvent>(
+                                new BoundedOutOfOrdernessTimestampExtractor<ReceiptEvent>(Time.seconds(0)) {
+                                    @Override
+                                    public long extractTimestamp(ReceiptEvent element) {
+                                        return element.getTimestamp() * 1000L;
+                                    }
+                                }));
 
         // 将两条流进行连接合并，进行匹配处理，不匹配的事件输出到侧输出流
         SingleOutputStreamOperator<Tuple2<OrderEvent, ReceiptEvent>> resultStream = orderEventStream.keyBy(OrderEvent::getTxId)
                 .connect(receiptEventStream.keyBy(ReceiptEvent::getTxId))
-                .process(new TxPayMatchDetect(unmatchedPays,unmatchedReceipts));
+                .process(new TxPayMatchDetect(unmatchedPays, unmatchedReceipts));
 
         resultStream.print("matched-pays");
         resultStream.getSideOutput(unmatchedPays).print("unmatched-pays");
