@@ -3,6 +3,7 @@ package cn.xhjava.flink_10_broadcast;
 import org.apache.flink.api.common.state.MapStateDescriptor;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.streaming.api.datastream.BroadcastStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.LocalStreamEnvironment;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -29,7 +30,8 @@ public class BroadCastStream01_Demo {
                 "\"primary_keys\":[\"id\"],\"after\":{\"id\":\"94\",\"fk_id\":\"2010\",\"qfxh\":\"94\",\"jdpj\":\"AFLWAI\",\"nioroa\":\"RTABPQ\",\"gwvz\":\"ZJRON\",\"joqtf\":\"VEZB\",\"isdeleted\":\"0\",\"lastupdatedttm\":\"2020-05-07 16:25:34.290\",\"rowkey\":\"94\"}}");
 
 
-        kafkaStrean.connect(broadcastStream.broadcast(metadata)).process(new MyBroadCastProcessFuncation()).printToErr();
+        BroadcastStream<List<MetaData>> broadcast = broadcastStream.broadcast(metadata);
+        kafkaStrean.connect(broadcast).process(new MyBroadCastProcessFuncation()).printToErr();
 
 
     }

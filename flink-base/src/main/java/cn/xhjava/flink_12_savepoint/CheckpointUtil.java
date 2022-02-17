@@ -24,7 +24,6 @@ public class CheckpointUtil {
 
     public static Tuple2<String, String> getLastChecpointInfo(String checkpointBasePath) {
         Tuple2<String, String> result = null;
-
         FileSystem fs = null;
         try {
             fs = FileSystem.get(new Configuration());

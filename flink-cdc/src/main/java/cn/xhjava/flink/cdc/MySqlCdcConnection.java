@@ -1,8 +1,8 @@
 package cn.xhjava.flink.cdc;
 
-import com.ververica.cdc.connectors.mysql.source.MySqlSource;
-import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
-import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import com.alibaba.ververica.cdc.connectors.mysql.MySQLSource;
+import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
+import com.alibaba.ververica.cdc.debezium.DebeziumSourceFunction;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
@@ -14,31 +14,32 @@ public class MySqlCdcConnection {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
+        /*MySqlSource<String> mySqlSource = MySqlSource.<String>builder()
                 .hostname("192.168.0.114")
                 .port(3306)
-                .databaseList("hid0101_his_cache_xh") // set captured database
-                .tableList("hid0101_his_cache_xh.test_1," +
-                        "hid0101_his_cache_xh.test_2," +
-                        "hid0101_his_cache_xh.test_3," +
-                        "hid0101_his_cache_xh.test_4," +
-                        "hid0101_his_cache_xh.test_5," +
-                        "hid0101_his_cache_xh.test_6," +
-                        "hid0101_his_cache_xh.test_7," +
-                        "hid0101_his_cache_xh.test_8," +
-                        "hid0101_his_cache_xh.test_9," +
-                        "hid0101_his_cache_xh.test_10") // set captured table
+                .databaseList("flink_realtime") // set captured database
+                .tableList("flink_realtime.t_table_process") // set captured table
                 .username("root")
                 .password("root")
                 .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to JSON String
+                .build();*/
+
+        DebeziumSourceFunction<String> build = MySQLSource.<String>builder()
+                .hostname("192.168.0.114")
+                .port(3306)
+                .username("root")
+                .password("root")
+                .databaseList("flink_realtime")
+                .tableList("flink_realtime.t_table_process")
+                .startupOptions(StartupOptions.initial())
+                .deserializer(new CustomerDeserialization())
                 .build();
 
 
         // enable checkpoint
-        env.enableCheckpointing(3000);
+        env.enableCheckpointing(60000);
 
-        env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source")
-                // set 4 parallel source tasks
+        env.addSource(build)
                 .setParallelism(1)
                 .print().setParallelism(1); // use parallelism 1 for sink to keep message ordering
 
