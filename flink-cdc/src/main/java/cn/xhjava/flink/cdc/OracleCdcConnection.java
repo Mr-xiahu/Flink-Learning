@@ -1,10 +1,8 @@
 package cn.xhjava.flink.cdc;
 
 import com.ververica.cdc.connectors.oracle.OracleSource;
-import com.ververica.cdc.connectors.oracle.table.StartupOptions;
 import com.ververica.cdc.debezium.DebeziumSourceFunction;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
-import deserialize.JsonToOggSchema;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 /**
@@ -13,7 +11,9 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class OracleCdcConnection {
     public static void main(String[] args) throws Exception {
+
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
         DebeziumSourceFunction<String> oracle = OracleSource.<String>builder()
                 .hostname("192.168.0.38")
                 .port(1521)
@@ -31,7 +31,6 @@ public class OracleCdcConnection {
                         "hid0101_his_cache_xh.test_10") // set captured table
                 .username("klbr")
                 .password("klbr")
-                .startupOptions(StartupOptions.initial())
                 .deserializer(new JsonDebeziumDeserializationSchema())
                 .build();
 

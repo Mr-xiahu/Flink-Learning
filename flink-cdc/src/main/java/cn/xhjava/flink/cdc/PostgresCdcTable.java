@@ -31,27 +31,6 @@ public class PostgresCdcTable {
                 ")";
 
 
-
-//        //拼接souceDLL
-//        String sourceDDL = "CREATE TABLE shipments (" +
-//                "  id INT," +
-//                "  age INT," +
-//                "  name STRING" +
-//                ") WITH (" +
-//                "  'connector' = 'postgres-cdc'," +
-//                "  'hostname' = '192.168.119.128'," +
-//                "  'port' = '5432'," +
-//                "  'username' = 'postgres'," +
-//                "  'password' = 'postgres'," +
-//                "  'decoding.plugin.name' = 'wal2json'," +
-//                "  'database-name' = 'postgres'," +
-//                "  'schema-name' = 'public'," +
-//                "  'table-name' = 'cdc_pg_source'" +
-//                ")";
-//
-//
-//        in sout form
-
         //执行source表ddl
         tableEnv.executeSql(sourceDDL);
         tableEnv.executeSql("SELECT * FROM shipments").print();
