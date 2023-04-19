@@ -38,5 +38,7 @@ public class MyKafkaFetcher<T> extends KafkaFetcher<T> {
         if (taskCallBack != null) {
             taskCallBack.callBackUpdateOffset(offsets);
         }
+
+
     }
 }
