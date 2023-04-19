@@ -6,6 +6,9 @@ import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.runtime.state.FunctionInitializationContext;
+import org.apache.flink.runtime.state.FunctionSnapshotContext;
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -41,14 +44,14 @@ public class Flink_01_KeyedProcessFunction {
     }
 
 
-    public static class MyKeyedProcess extends KeyedProcessFunction<Tuple, SensorReading, Integer> {
+    public static class MyKeyedProcess extends KeyedProcessFunction<Tuple, SensorReading, Integer> implements CheckpointedFunction {
 
         ValueState<Long> tsTimerState;
 
         @Override
         public void open(Configuration parameters) throws Exception {
             //获取State
-            tsTimerState = getRuntimeContext().getState(new ValueStateDescriptor<Long>("ts-timer", Long.class));
+
         }
 
         @Override
@@ -91,6 +94,16 @@ public class Flink_01_KeyedProcessFunction {
         @Override
         public void close() throws Exception {
             tsTimerState.clear();
+        }
+
+        @Override
+        public void snapshotState(FunctionSnapshotContext context) throws Exception {
+
+        }
+
+        @Override
+        public void initializeState(FunctionInitializationContext context) throws Exception {
+            tsTimerState = context.getKeyedStateStore().getState(new ValueStateDescriptor<Long>("ts-timer", Long.class));
         }
     }
 }

@@ -5,6 +5,9 @@ import cn.xhjava.domain.SensorReading;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.api.common.state.*;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.runtime.state.FunctionInitializationContext;
+import org.apache.flink.runtime.state.FunctionSnapshotContext;
+import org.apache.flink.streaming.api.checkpoint.CheckpointedFunction;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -45,7 +48,7 @@ public class State02_KeyedState {
     }
 
     // 自定义RichMapFunction
-    public static class MyKeyCountMapper extends RichMapFunction<SensorReading, Integer> {
+    public static class MyKeyCountMapper extends RichMapFunction<SensorReading, Integer> implements CheckpointedFunction {
         private ValueState<Integer> keyCountState;
 
         // 其它类型状态的声明
@@ -54,12 +57,17 @@ public class State02_KeyedState {
         private ReducingState<SensorReading> myReducingState;
 
         @Override
-        public void open(Configuration parameters) throws Exception {
+        public void initializeState(FunctionInitializationContext context) throws Exception {
             keyCountState = getRuntimeContext().getState(new ValueStateDescriptor<Integer>("key-count", Integer.class, 0));
-
             myListState = getRuntimeContext().getListState(new ListStateDescriptor<String>("my-list", String.class));
             myMapState = getRuntimeContext().getMapState(new MapStateDescriptor<String, Double>("my-map", String.class, Double.class));
             //myReducingState = getRuntimeContext().getReducingState(new ReducingStateDescriptor<SensorReading>("", SensorReading.class));
+        }
+
+        @Override
+        public void open(Configuration parameters) throws Exception {
+
+
         }
 
         @Override
@@ -84,5 +92,12 @@ public class State02_KeyedState {
             keyCountState.update(count);
             return count;
         }
+
+        @Override
+        public void snapshotState(FunctionSnapshotContext context) throws Exception {
+
+        }
+
+
     }
 }
