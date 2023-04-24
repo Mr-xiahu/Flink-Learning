@@ -11,36 +11,43 @@
 
     <artifactId>flink-cdc</artifactId>
 
+    <properties>
+        <flink.version>1.13.5</flink.version>
+        <flink-cdc.version>2.3-SNAPSHOT</flink-cdc.version>
+        <debezium.version>1.6.4.Final</debezium.version>
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-java</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-java-bridge_2.11</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-planner-blink_2.11</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-runtime-web_${scala.binary.version}</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -50,7 +57,7 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-clients_2.11</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>flink-shaded-jackson</artifactId>
@@ -61,35 +68,50 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-common</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-base</artifactId>
-            <version>1.13.1</version>
+            <version>${flink.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.ververica</groupId>
+            <groupId>com.ververica</groupId>
             <artifactId>flink-connector-mysql-cdc</artifactId>
-            <version>1.2.0</version>
+            <version>${flink-cdc.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.ververica</groupId>
             <artifactId>flink-connector-postgres-cdc</artifactId>
-            <version>2.1-SNAPSHOT</version>
+            <version>${flink-cdc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ververica</groupId>
             <artifactId>flink-connector-oracle-cdc</artifactId>
-            <version>2.1-SNAPSHOT</version>
+            <version>${flink-cdc.version}</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>com.ververica</groupId>
-            <artifactId>flink-sql-connector-postgres-cdc</artifactId>
-            <version>2.1-SNAPSHOT</version>
-        </dependency>-->
+            <artifactId>flink-connector-postgres-cdc</artifactId>
+            <version>${flink-cdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ververica</groupId>
+            <artifactId>flink-connector-sqlserver-cdc</artifactId>
+            <version>${flink-cdc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-statebackend-rocksdb_2.11</artifactId>
+            <version>1.12.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.instantclient</groupId>
+            <artifactId>xstreams</artifactId>
+            <version>21.1.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>
