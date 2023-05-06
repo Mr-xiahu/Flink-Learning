@@ -12,13 +12,16 @@ import java.util.Properties;
  * @author Xiahu
  * @create 2021/10/27 0027
  */
-public class OracleCdcStream {
+public class OracleCdcStreamLogMiner {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         Properties properties = new Properties();
-        //properties.put("database.connection.adapter", "xstream");
-        //properties.put("database.out.server.name", "dbtestout");
+//        properties.put("database.connection.adapter", "xstream");
+//        properties.put("database.out.server.name", "dbzxout");
+        properties.put("database.history", "io.debezium.relational.history.MemoryDatabaseHistory");
+        properties.put("database.history.kafka.bootstrap.servers", "192.168.0.113:9092");
+        properties.put("database.history.kafka.topic", "dbcenter_init");
 
 
         DebeziumSourceFunction<String> oracle = OracleSource.<String>builder()
@@ -26,14 +29,10 @@ public class OracleCdcStream {
                 .port(1521)
                 .database("dbcenter")
                 .schemaList("HID0101_CACHE_HIS_CDCTEST_XH")
-//                .schemaList("KLBR")
                 .tableList("HID0101_CACHE_HIS_CDCTEST_XH.TEST_1")
-//                .tableList("KLBR.PRODUCT") // set captured table
-//                .username("xstrm")
                 .username("klbr")
-//                .password("xstrm")
                 .password("klbr")
-                .startupOptions(StartupOptions.latest())
+                .startupOptions(StartupOptions.initial())
                 .deserializer(new JsonDebeziumDeserializationSchema())
                 .debeziumProperties(properties)
                 .build();

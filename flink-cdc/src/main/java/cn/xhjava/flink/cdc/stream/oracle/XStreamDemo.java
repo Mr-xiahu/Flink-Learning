@@ -17,7 +17,7 @@ import java.sql.SQLException;
 public class XStreamDemo {
     private static XStreamOut xsOut;
 
-    private static String xStreamServerName = "dbtestout";
+    private static String xStreamServerName = "dbzxout";
 
 
     public static void main(String[] args) throws Exception {
@@ -35,7 +35,7 @@ public class XStreamDemo {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             // 连接数据库
             Connection connection = DriverManager.getConnection(url, user, password);
-            byte[] startPosition = XStreamUtility.convertSCNToPosition(new NUMBER("34879013", 0), XStreamUtility.POS_VERSION_V1);
+            byte[] startPosition = XStreamUtility.convertSCNToPosition(new NUMBER("35623143", 0), XStreamUtility.POS_VERSION_V1);
 
             xsOut = XStreamOut.attach((oracle.jdbc.OracleConnection) connection, xStreamServerName,
                     startPosition, 1, 1, XStreamOut.DEFAULT_MODE);

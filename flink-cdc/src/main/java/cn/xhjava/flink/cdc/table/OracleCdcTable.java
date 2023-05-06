@@ -20,7 +20,8 @@ public class OracleCdcTable {
         env.enableCheckpointing(3000);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.create(env);
 
-        /*String sql = "CREATE TABLE oracle_products_cdc (\n"
+        // XStream 模式
+        String sql = "CREATE TABLE oracle_products_cdc (\n"
                 + " ID INT NOT NULL,\n"
                 + " NAME STRING,\n"
                 + " ADDRESS STRING,\n"
@@ -43,9 +44,10 @@ public class OracleCdcTable {
                 + " 'debezium.log.mining.continuous.mine' = 'true'\n"
                 // + " 'log.mining.batch.size.max' = '500',\n"
                 // + " 'log.mining.archive.log.only.scn.poll.interval.ms' ='500' "
-                + ")";*/
+                + ")";
 
-        String sql = "CREATE TABLE oracle_products_cdc (\n"
+        // LogMiner 模式
+        sql = "CREATE TABLE oracle_products_cdc (\n"
                 + " ID INT NOT NULL,\n"
                 + " NAME STRING,\n"
                 + " ADDRESS STRING,\n"
@@ -56,18 +58,14 @@ public class OracleCdcTable {
                 + " 'connector' = 'oracle-cdc',\n"
                 + " 'hostname' = '192.168.0.67',\n"
                 + " 'port' = '1521',\n"
-                + " 'username' = 'xstrm',\n"
-                + " 'password' = 'xstrm',"
+                + " 'username' = 'klbr',\n"
+                + " 'password' = 'klbr',"
                 + " 'database-name' = 'dbcenter',\n"
-                + " 'schema-name' = 'klbr',\n"
-                + " 'table-name' = 'PRODUCT',\n"
-                // + " 'scan.incremental.snapshot.enabled' = 'false',\n"
+                + " 'schema-name' = 'HID0101_CACHE_HIS_CDCTEST_XH',\n"
+                + " 'table-name' = 'TEST_1',\n"
                 + " 'debezium.log.mining.strategy' = 'online_catalog',\n"
-                + " 'debezium.database.connection.adapter' = 'xstream',\n"
-                + " 'debezium.database.out.server.name' = 'dbtestout',\n"
-                + " 'debezium.log.mining.continuous.mine' = 'true'\n"
-                // + " 'log.mining.batch.size.max' = '500',\n"
-                // + " 'log.mining.archive.log.only.scn.poll.interval.ms' ='500' "
+                + " 'debezium.database.history.kafka.bootstrap.servers' = '192.168.0.113:9092',\n"
+                + " 'debezium.database.history.kafka.topic' = 'dbcenter_init'\n"
                 + ")";
 
 
@@ -75,6 +73,6 @@ public class OracleCdcTable {
         tableEnv.executeSql("select * from oracle_products_cdc").print();
 
 
-        env.execute("Print MySQL Snapshot + Binlog");
+        env.execute("Print Oracle Snapshot + Binlog");
     }
 }
